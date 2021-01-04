@@ -1,0 +1,3 @@
+include ':tv'
+include ':mobile'
+rootProject.name = "My Application"
