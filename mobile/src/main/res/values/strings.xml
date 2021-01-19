@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">My Application</string>
+	<string name="app_name">TV Remote</string>
+	<string name="toggle_tv_power">Toggle tv power</string>
+	<string name="no_internet">No internet</string>
+	<string name="loading">Loading…</string>
+	<string name="its_on">It\'s on</string>
+	<string name="its_off">It\'s off</string>
+	<string name="unknown">Unknown</string>
+	<string name="notification_title">Tv remote</string>
+	<string name="notification_content">Use this shortcuts to control your TV</string>
+	<string name="channel_id">tv_remote_channel</string>
+	<string name="channel_name">Tv remote notifications</string>
+	<string name="select_your_tv">Select your TV</string>
+	<string name="select_your_tv_subtitle">Make sure you’re connected to the same WiFi as your TV</string>
+	<string name="retry">Retry</string>
+	<string name="searching">Searching…</string>
+	<string name="something_went_wrong">Something went wrong</string>
+	<string name="no_devices_found">No devices found</string>
+	<string name="pair_your_phone">Pair your phone</string>
+	<string name="pair_your_phone_subtitle">Enter the code displayed on your TV</string>
+	<string name="clear">Clear</string>
+	<string name="home_button">Home button</string>
+	<string name="source_button">Source button</string>
+	<string name="record_audio_instructions">Press record button to record your voice</string>
+	<string name="power_button">Power button</string>
+	<string name="no_devices">No devices</string>
 </resources>

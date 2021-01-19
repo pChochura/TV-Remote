@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:padding="25dp">
+
+	<androidx.appcompat.widget.LinearLayoutCompat
+		android:id="@+id/logoContainer"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:orientation="horizontal"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:src="@drawable/ic_icon"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:text="@string/app_name"
+			android:textSize="14sp" />
+
+	</androidx.appcompat.widget.LinearLayoutCompat>
+
+	<androidx.appcompat.widget.AppCompatTextView
+		android:id="@+id/textTitle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="50dp"
+		android:fontFamily="@font/montserrat_bold"
+		android:text="@string/select_your_tv"
+		android:textSize="36sp"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/logoContainer" />
+
+	<androidx.appcompat.widget.AppCompatTextView
+		android:id="@+id/textSubtitle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/select_your_tv_subtitle"
+		android:textColor="@color/textSecondary"
+		android:textSize="14sp"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/textTitle" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/listDevices"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginTop="25dp"
+		android:layout_marginBottom="25dp"
+		android:fadingEdge="vertical"
+		android:fadingEdgeLength="10dp"
+		app:layout_constraintBottom_toTopOf="@id/buttonRetry"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/textSubtitle" />
+
+	<ProgressBar
+		android:id="@+id/progress"
+		android:layout_width="82dp"
+		android:layout_height="82dp"
+		android:indeterminate="true"
+		android:indeterminateTint="@color/primary"
+		app:layout_constraintBottom_toTopOf="@id/buttonRetry"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/textSubtitle" />
+
+	<androidx.appcompat.widget.AppCompatImageView
+		android:id="@+id/imageError"
+		android:layout_width="82dp"
+		android:layout_height="82dp"
+		android:src="@drawable/ic_error"
+		android:tint="@color/primary"
+		app:layout_constraintBottom_toBottomOf="@id/progress"
+		app:layout_constraintLeft_toLeftOf="@id/progress"
+		app:layout_constraintRight_toRightOf="@id/progress"
+		app:layout_constraintTop_toTopOf="@id/progress" />
+
+	<androidx.constraintlayout.widget.Barrier
+		android:id="@+id/barrier"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:barrierDirection="bottom"
+		app:constraint_referenced_ids="imageError,progress" />
+
+	<androidx.appcompat.widget.AppCompatTextView
+		android:id="@+id/textLabel"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20dp"
+		android:text="@string/searching"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/buttonRetry"
+		style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="10dp"
+		android:insetTop="0dp"
+		android:insetBottom="0dp"
+		android:minHeight="0dp"
+		android:paddingLeft="30dp"
+		android:paddingTop="10dp"
+		android:paddingRight="30dp"
+		android:paddingBottom="10dp"
+		android:text="@string/retry"
+		android:textAllCaps="false"
+		android:textColor="@color/textPrimary"
+		android:textSize="14sp"
+		app:backgroundTint="@color/primary"
+		app:cornerRadius="5dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

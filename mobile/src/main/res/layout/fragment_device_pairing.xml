@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:padding="25dp"
+	tools:ignore="MissingConstraints">
+
+	<androidx.appcompat.widget.LinearLayoutCompat
+		android:id="@+id/logoContainer"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:orientation="horizontal"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:src="@drawable/ic_icon"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:text="@string/app_name"
+			android:textSize="14sp" />
+
+	</androidx.appcompat.widget.LinearLayoutCompat>
+
+	<androidx.appcompat.widget.AppCompatTextView
+		android:id="@+id/textTitle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="64dp"
+		android:fontFamily="@font/montserrat_bold"
+		android:text="@string/pair_your_phone"
+		android:textSize="36sp"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/logoContainer" />
+
+	<androidx.appcompat.widget.AppCompatTextView
+		android:id="@+id/textSubtitle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/pair_your_phone_subtitle"
+		android:textColor="@color/textSecondary"
+		android:textSize="14sp"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/textTitle" />
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/containerSecret"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="25dp"
+		android:background="@drawable/rounded_borders"
+		android:paddingLeft="10dp"
+		android:paddingTop="20dp"
+		android:paddingRight="10dp"
+		android:paddingBottom="20dp"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/textSubtitle">
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:id="@+id/textSecret1"
+			android:layout_width="60dp"
+			android:layout_height="wrap_content"
+			android:fontFamily="@font/montserrat_bold"
+			android:gravity="center"
+			android:textAlignment="center"
+			android:textSize="48sp"
+			app:layout_constraintEnd_toStartOf="@id/textSecret2"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<View
+			android:layout_width="0dp"
+			android:layout_height="5dp"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:background="@drawable/rounded_borders"
+			android:backgroundTint="@color/textPrimary"
+			app:layout_constraintLeft_toLeftOf="@id/textSecret1"
+			app:layout_constraintRight_toRightOf="@id/textSecret1"
+			app:layout_constraintTop_toBottomOf="@id/textSecret1" />
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:id="@+id/textSecret2"
+			android:layout_width="60dp"
+			android:layout_height="wrap_content"
+			android:fontFamily="@font/montserrat_bold"
+			android:gravity="center"
+			android:textAlignment="center"
+			android:textSize="48sp"
+			app:layout_constraintEnd_toStartOf="@id/textSecret3"
+			app:layout_constraintStart_toEndOf="@id/textSecret1"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<View
+			android:layout_width="0dp"
+			android:layout_height="5dp"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:background="@drawable/rounded_borders"
+			android:backgroundTint="@color/textPrimary"
+			app:layout_constraintLeft_toLeftOf="@id/textSecret2"
+			app:layout_constraintRight_toRightOf="@id/textSecret2"
+			app:layout_constraintTop_toBottomOf="@id/textSecret2" />
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:id="@+id/textSecret3"
+			android:layout_width="60dp"
+			android:layout_height="wrap_content"
+			android:fontFamily="@font/montserrat_bold"
+			android:gravity="center"
+			android:textAlignment="center"
+			android:textSize="48sp"
+			app:layout_constraintEnd_toStartOf="@id/textSecret4"
+			app:layout_constraintStart_toEndOf="@id/textSecret2"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<View
+			android:layout_width="0dp"
+			android:layout_height="5dp"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:background="@drawable/rounded_borders"
+			android:backgroundTint="@color/textPrimary"
+			app:layout_constraintLeft_toLeftOf="@id/textSecret3"
+			app:layout_constraintRight_toRightOf="@id/textSecret3"
+			app:layout_constraintTop_toBottomOf="@id/textSecret3" />
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:id="@+id/textSecret4"
+			android:layout_width="60dp"
+			android:layout_height="wrap_content"
+			android:fontFamily="@font/montserrat_bold"
+			android:gravity="center"
+			android:textAlignment="center"
+			android:textSize="48sp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/textSecret3"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<View
+			android:layout_width="0dp"
+			android:layout_height="5dp"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:background="@drawable/rounded_borders"
+			android:backgroundTint="@color/textPrimary"
+			app:layout_constraintLeft_toLeftOf="@id/textSecret4"
+			app:layout_constraintRight_toRightOf="@id/textSecret4"
+			app:layout_constraintTop_toBottomOf="@id/textSecret4" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<include
+		layout="@layout/partial_hexadecimal_keyboard"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_margin="20dp"
+		app:layout_constraintBottom_toTopOf="@id/buttonClear"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/containerSecret" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/buttonClear"
+		style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="10dp"
+		android:insetTop="0dp"
+		android:insetBottom="0dp"
+		android:minHeight="0dp"
+		android:paddingLeft="30dp"
+		android:paddingTop="10dp"
+		android:paddingRight="30dp"
+		android:paddingBottom="10dp"
+		android:text="@string/clear"
+		android:textAllCaps="false"
+		android:textColor="@color/textPrimary"
+		android:textSize="14sp"
+		app:cornerRadius="5dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:strokeColor="@color/primary"
+		app:strokeWidth="3dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
