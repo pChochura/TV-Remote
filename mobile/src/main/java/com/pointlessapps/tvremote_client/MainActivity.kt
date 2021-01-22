@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.pointlessapps.tvremote_client.fragments.FragmentDeviceDiscovery
 import com.pointlessapps.tvremote_client.managers.FragmentManager
+import com.pointlessapps.tvremote_client.utils.Utils
+import com.pointlessapps.tvremote_client.viewModels.ViewModelDevice
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,4 +26,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun dispatchKeyEvent(event: KeyEvent) =
         fragmentManager.dispatchKeyEvent(event) ?: super.dispatchKeyEvent(event)
+
+    override fun onPause() {
+        fragmentManager.onPauseActivity()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fragmentManager.onResumeActivity()
+    }
 }

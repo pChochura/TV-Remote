@@ -1,29 +1,23 @@
 package com.pointlessapps.tvremote_client.fragments
 
 import android.content.Context
-import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 import com.pointlessapps.tvremote_client.utils.Utils
+import com.pointlessapps.tvremote_client.viewModels.ViewModelDevice
 import com.pointlessapps.tvremote_client.viewModels.ViewModelDevicePairing
 
 class FragmentDevicePairing : FragmentBaseImpl() {
 
     private lateinit var deviceWrapper: DeviceWrapper
 
-    companion object {
-        fun newInstance(deviceWrapper: DeviceWrapper) =
-            FragmentDevicePairing().apply {
-                arguments = Bundle().apply {
-                    putSerializable("deviceWrapper", deviceWrapper)
-                }
-            }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        deviceWrapper = arguments?.getSerializable("deviceWrapper") as DeviceWrapper
+        deviceWrapper = ViewModelProvider(
+            activity(),
+            Utils.getViewModelFactory(activity())
+        ).get(ViewModelDevice::class.java).deviceWrapper
     }
 
     override fun getLayoutId() = R.layout.fragment_device_pairing
@@ -32,7 +26,11 @@ class FragmentDevicePairing : FragmentBaseImpl() {
         val viewModel =
             ViewModelProvider(
                 this,
-                Utils.getViewModelFactory(requireActivity(), root(), deviceWrapper)
+                Utils.getViewModelFactory(
+                    activity(),
+                    root(),
+                    deviceWrapper
+                )
             ).get(ViewModelDevicePairing::class.java)
 
         viewModel.setKeyboard()

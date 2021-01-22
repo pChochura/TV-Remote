@@ -44,17 +44,6 @@
 				android:name="android.service.quicksettings.TOGGLEABLE_TILE"
 				android:value="true" />
 		</service>
-
-		<receiver
-			android:name=".receivers.QtStateRefreshReceiver"
-			android:exported="false">
-			<intent-filter>
-				<action android:name="com.pointlessapps.tvremote_client.TOGGLE_POWER" />
-			</intent-filter>
-			<intent-filter>
-				<action android:name="com.pointlessapps.tvremote_client.REFRESH_STATE" />
-			</intent-filter>
-		</receiver>
 	</application>
 
 </manifest>

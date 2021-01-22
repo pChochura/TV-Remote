@@ -18,4 +18,6 @@ interface FragmentBase {
     var onChangeFragment: ((FragmentBase) -> Unit)?
     var onPopBackStack: (() -> Unit)?
     var onDispatchKeyEvent: ((KeyEvent) -> Boolean)?
+    var onPauseActivity: (() -> Unit)?
+    var onResumeActivity: (() -> Unit)?
 }

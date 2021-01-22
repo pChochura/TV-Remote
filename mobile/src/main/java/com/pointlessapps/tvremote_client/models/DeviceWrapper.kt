@@ -2,9 +2,8 @@ package com.pointlessapps.tvremote_client.models
 
 import android.view.inputmethod.EditorInfo
 import com.google.android.tv.support.remote.core.Device
-import java.io.Serializable
 
-class DeviceWrapper(var device: Device?) : Serializable {
+class DeviceWrapper(var device: Device?) {
 
     internal var deviceListener: Device.Listener? = null
 

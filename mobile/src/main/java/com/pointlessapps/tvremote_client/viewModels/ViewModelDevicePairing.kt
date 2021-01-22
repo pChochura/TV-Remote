@@ -1,19 +1,16 @@
 package com.pointlessapps.tvremote_client.viewModels
 
-import android.app.Activity
-import android.app.Application
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.AndroidViewModel
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
-import com.pointlessapps.tvremote_client.utils.saveDeviceInfo
 import kotlinx.android.synthetic.main.fragment_device_pairing.view.*
 
 class ViewModelDevicePairing(
-    activity: Activity,
+    activity: AppCompatActivity,
     private val root: ViewGroup,
     private val deviceWrapper: DeviceWrapper
 ) : AndroidViewModel(activity.application) {

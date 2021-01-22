@@ -1,13 +1,15 @@
 package com.pointlessapps.tvremote_client.viewModels
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.Application
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.service.quicksettings.TileService
 import android.view.KeyEvent
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.AndroidViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,16 +17,14 @@ import com.google.android.tv.support.remote.core.Device
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.adapters.AdapterApplication
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
-import com.pointlessapps.tvremote_client.receivers.QtStateRefreshReceiver
 import com.pointlessapps.tvremote_client.services.TvRemoteQTService
 import com.pointlessapps.tvremote_client.tv.TvRemote
 import com.pointlessapps.tvremote_client.utils.SwipeTouchHandler
 import com.pointlessapps.tvremote_client.utils.runAsyncCatch
 import kotlinx.android.synthetic.main.fragment_remote.view.*
-import kotlin.system.exitProcess
 
 class ViewModelRemote(
-    private val activity: Activity,
+    private val activity: AppCompatActivity,
     private val root: ViewGroup,
     private val deviceWrapper: DeviceWrapper
 ) : AndroidViewModel(activity.application) {
@@ -41,16 +41,17 @@ class ViewModelRemote(
     )
 
     var onDispatchKeyEventListener: ((KeyEvent) -> Boolean)? = null
+    var onPauseActivityListener: (() -> Unit)? = null
+    var onResumeActivityListener: (() -> Unit)? = null
 
     @SuppressLint("ClickableViewAccessibility")
     fun setClickListeners() {
         root.buttonPower.setOnClickListener {
             runAsyncCatch({
                 remote.powerOff(context)
-                QtStateRefreshReceiver.sendBroadcast(
-                    context,
-                    TvRemoteQTService.ACTION_TOGGLE_POWER,
-                    "off"
+                TileService.requestListeningState(
+                    activity,
+                    ComponentName(activity, TvRemoteQTService::class.java)
                 )
                 remote.disconnect()
                 activity.finish()
@@ -93,6 +94,20 @@ class ViewModelRemote(
         }
     }
 
+    fun setStateListeners() {
+        onPauseActivityListener = { deviceWrapper.device?.disconnect() }
+        onResumeActivityListener = {
+            reconnect()
+            root.progress.isVisible = true
+        }
+
+        deviceWrapper.setOnDisconnectedListener {
+            reconnect()
+            root.progress.isVisible = true
+        }
+        deviceWrapper.setOnConnectedListener { root.progress.isVisible = false }
+    }
+
     fun setTouchHandler() {
         root.containerTouchHandler.setOnTouchListener(SwipeTouchHandler {
             when (it) {
@@ -117,18 +132,13 @@ class ViewModelRemote(
 
     fun powerOn() {
         remote.powerOn(context)
-        QtStateRefreshReceiver.sendBroadcast(
-            context,
-            TvRemoteQTService.ACTION_TOGGLE_POWER,
-            "on"
+        TileService.requestListeningState(
+            activity,
+            ComponentName(activity, TvRemoteQTService::class.java)
         )
     }
 
-    fun setOnDisconnectedListener() {
-        deviceWrapper.setOnDisconnectedListener { reconnect() }
-    }
-
-    fun reconnect() {
+    private fun reconnect() {
         deviceWrapper.device = Device.from(
             context,
             deviceWrapper.device!!.deviceInfo,
@@ -136,6 +146,4 @@ class ViewModelRemote(
             Handler(Looper.getMainLooper())
         )
     }
-
-    fun isConnected() = deviceWrapper.device!!.isConnected
 }

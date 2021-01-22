@@ -1,10 +1,6 @@
 package com.pointlessapps.tvremote_client.services
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
@@ -22,24 +18,8 @@ import kotlinx.coroutines.launch
 
 class TvRemoteQTService : TileService() {
 
-    companion object {
-        const val ACTION_TOGGLE_POWER = "com.pointlessapps.tvremote_client.TOGGLE_POWER"
-        const val ACTION_REFRESH_STATE = "com.pointlessapps.tvremote_client.REFRESH_STATE"
-        const val REFRESH_PERIOD = 30 * 60 * 1000L
-    }
-
     private val requests = mutableListOf<CancellableRequest>()
     private var forceLoadingState = false
-
-    override fun onBind(intent: Intent): IBinder? {
-        if (intent.action in arrayOf(ACTION_TOGGLE_POWER, ACTION_REFRESH_STATE)) {
-            setState(intent.getStringExtra("state"))
-
-            return null
-        }
-
-        return super.onBind(intent)
-    }
 
     override fun onCreate() {
         NetworkUtils.registerNetworkChangeListener(applicationContext) { available ->
@@ -48,18 +28,6 @@ class TvRemoteQTService : TileService() {
                 else -> refreshState()
             }
         }
-
-        getSystemService(AlarmManager::class.java).setInexactRepeating(
-            AlarmManager.RTC,
-            System.currentTimeMillis() + REFRESH_PERIOD,
-            REFRESH_PERIOD,
-            PendingIntent.getBroadcast(
-                applicationContext,
-                123,
-                Intent(ACTION_REFRESH_STATE),
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        )
     }
 
     override fun onClick() {

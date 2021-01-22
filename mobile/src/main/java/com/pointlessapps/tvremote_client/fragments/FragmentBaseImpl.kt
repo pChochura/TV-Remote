@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.pointlessapps.tvremote_client.R
 
@@ -16,10 +17,14 @@ abstract class FragmentBaseImpl : Fragment(), FragmentBase {
     private var rootView: ViewGroup? = null
     override fun root() = rootView!!
 
+    fun activity() = requireActivity() as AppCompatActivity
+
     override var forceRefresh = false
     override var onChangeFragment: ((FragmentBase) -> Unit)? = null
     override var onPopBackStack: (() -> Unit)? = null
     override var onDispatchKeyEvent: ((KeyEvent) -> Boolean)? = null
+    override var onPauseActivity: (() -> Unit)? = null
+    override var onResumeActivity: (() -> Unit)? = null
 
     abstract override fun created()
 

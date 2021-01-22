@@ -1,14 +1,16 @@
 package com.pointlessapps.tvremote_client.viewModels
 
-import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.tv.support.remote.core.Device
@@ -20,13 +22,10 @@ import com.pointlessapps.tvremote_client.fragments.FragmentBase
 import com.pointlessapps.tvremote_client.fragments.FragmentDevicePairing
 import com.pointlessapps.tvremote_client.fragments.FragmentRemote
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
-import com.pointlessapps.tvremote_client.utils.DeviceListenerImpl
-import com.pointlessapps.tvremote_client.utils.DiscoveryListenerImpl
-import com.pointlessapps.tvremote_client.utils.loadDeviceInfo
-import com.pointlessapps.tvremote_client.utils.saveDeviceInfo
+import com.pointlessapps.tvremote_client.utils.*
 import kotlinx.android.synthetic.main.fragment_device_discovery.view.*
 
-class ViewModelDeviceDiscovery(activity: Activity, private val root: ViewGroup) :
+class ViewModelDeviceDiscovery(activity: AppCompatActivity, private val root: ViewGroup) :
     AndroidViewModel(activity.application) {
 
     private val context = activity.applicationContext
@@ -58,6 +57,15 @@ class ViewModelDeviceDiscovery(activity: Activity, private val root: ViewGroup) 
     }
 
     var onChangeFragmentListener: ((FragmentBase) -> Unit)? = null
+    var onPauseActivityListener: (() -> Unit)? = null
+    var onResumeActivityListener: (() -> Unit)? = null
+
+    init {
+        ViewModelProvider(
+            activity,
+            Utils.getViewModelFactory(activity)
+        ).get(ViewModelDevice::class.java).deviceWrapper = deviceWrapper
+    }
 
     fun setDeviceListener() {
         deviceWrapper.apply {
@@ -67,17 +75,17 @@ class ViewModelDeviceDiscovery(activity: Activity, private val root: ViewGroup) 
             }
             setOnConnectingListener { setState(STATE.LOADING) }
             setOnConnectedListener {
-                onChangeFragmentListener?.invoke(FragmentRemote.newInstance(deviceWrapper))
+                onChangeFragmentListener?.invoke(FragmentRemote())
             }
-            setOnDisconnectedListener {
-                context.saveDeviceInfo(null)
-                startDiscovery()
-            }
+            setOnDisconnectedListener { startDiscovery() }
             setOnPairingRequiredListener {
                 setState(STATE.LOADING)
-                onChangeFragmentListener?.invoke(FragmentDevicePairing.newInstance(deviceWrapper))
+                onChangeFragmentListener?.invoke(FragmentDevicePairing())
             }
         }
+
+        onPauseActivityListener = { discoverer.stopDiscovery() }
+        onResumeActivityListener = { startDiscovery() }
     }
 
     fun loadDeviceInfo() {

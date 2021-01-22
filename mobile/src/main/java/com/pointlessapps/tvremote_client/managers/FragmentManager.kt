@@ -59,4 +59,10 @@ class FragmentManager private constructor(
 
     fun dispatchKeyEvent(event: KeyEvent) =
         currentFragment.onDispatchKeyEvent?.invoke(event)
+
+    fun onPauseActivity() =
+        currentFragment.onPauseActivity?.invoke()
+
+    fun onResumeActivity() =
+        currentFragment.onResumeActivity?.invoke()
 }
