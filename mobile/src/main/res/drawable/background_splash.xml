@@ -1,0 +1,24 @@
+<layer-list
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item>
+		<shape android:shape="rectangle">
+			<gradient
+				android:endColor="#bbb"
+				android:gradientRadius="750"
+				android:startColor="#fff"
+				android:type="radial" />
+		</shape>
+	</item>
+	<item>
+		<bitmap
+			android:gravity="center"
+			android:src="@mipmap/icon_splash" />
+	</item>
+	<item>
+		<bitmap
+			android:alpha="0.6"
+			android:gravity="bottom|end"
+			android:src="@mipmap/signature" />
+	</item>
+</layer-list>
