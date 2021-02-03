@@ -24,4 +24,16 @@
 	<string name="record_audio_instructions">Press record button to record your voice</string>
 	<string name="power_button">Power button</string>
 	<string name="no_devices">No devices</string>
+	<string name="settings">Settings</string>
+	<string name="settings_subtitle">Here you can customise the behaviour of your remote</string>
+	<string name="turn_on_tv">Turn on TV</string>
+	<string name="turn_on_tv_subtitle">Once the connection is established your TV will be turned on</string>
+	<string name="close_the_application">Close the application</string>
+	<string name="close_the_application_subtitle">Turning off your TV causes the application to close</string>
+	<string name="shortcuts">Shortcuts</string>
+	<string name="shortcuts_subtitle">Toggle visibility of the shortcuts</string>
+	<string name="show_dpad">Show DPad</string>
+	<string name="show_dpad_subtitle">Use DPad instead of gesture navigation</string>
+	<string name="your_text_goes_here">Your text goes here</string>
+	<string name="cancel_voice_input">Cancel voice input</string>
 </resources>

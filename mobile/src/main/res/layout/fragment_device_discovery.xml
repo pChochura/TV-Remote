@@ -4,11 +4,12 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:background="@color/background"
 	android:padding="25dp">
 
 	<androidx.appcompat.widget.LinearLayoutCompat
 		android:id="@+id/logoContainer"
-		android:layout_width="wrap_content"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:gravity="center_vertical"
 		android:orientation="horizontal"
@@ -28,8 +29,19 @@
 			android:layout_gravity="center_vertical"
 			android:layout_marginLeft="10dp"
 			android:layout_marginRight="10dp"
+			android:layout_weight="1"
 			android:text="@string/app_name"
 			android:textSize="14sp" />
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:id="@+id/buttonSettings"
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:clickable="true"
+			android:focusable="true"
+			android:src="@drawable/ic_settings"
+			android:tint="@color/textSecondary" />
 
 	</androidx.appcompat.widget.LinearLayoutCompat>
 

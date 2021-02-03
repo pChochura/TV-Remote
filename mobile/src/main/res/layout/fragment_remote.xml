@@ -5,14 +5,144 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/containerTouchHandler"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:background="@color/background">
 
 	<androidx.appcompat.widget.AppCompatImageView
+		android:id="@+id/imageGestureNavigation"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:alpha="0.2"
 		android:scaleType="centerCrop"
 		android:src="@mipmap/ic_touch_track" />
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/containerDpad"
+		android:layout_width="240dp"
+		android:layout_height="240dp"
+		android:background="@drawable/ic_circle"
+		android:backgroundTint="@color/background"
+		android:elevation="10dp"
+		android:padding="10dp"
+		android:visibility="gone"
+		app:layout_constraintBottom_toTopOf="@id/buttonHome"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/listApplications">
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:id="@+id/buttonLeft"
+			android:layout_width="64dp"
+			android:layout_height="64dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:clickable="true"
+			android:focusable="true"
+			android:src="@drawable/ic_left"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:id="@+id/buttonRight"
+			android:layout_width="64dp"
+			android:layout_height="64dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:clickable="true"
+			android:focusable="true"
+			android:src="@drawable/ic_right"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:id="@+id/buttonUp"
+			android:layout_width="64dp"
+			android:layout_height="64dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:clickable="true"
+			android:focusable="true"
+			android:src="@drawable/ic_up"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:id="@+id/buttonDown"
+			android:layout_width="64dp"
+			android:layout_height="64dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:clickable="true"
+			android:focusable="true"
+			android:src="@drawable/ic_down"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent" />
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:id="@+id/buttonOK"
+			android:layout_width="86dp"
+			android:layout_height="86dp"
+			android:background="@drawable/ic_circle"
+			android:backgroundTint="@color/textSecondary"
+			android:clickable="true"
+			android:focusable="true"
+			android:fontFamily="@font/montserrat_bold"
+			android:foreground="?selectableItemBackgroundBorderless"
+			android:gravity="center"
+			android:text="@android:string/ok"
+			android:textAlignment="gravity"
+			android:textSize="20sp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<androidx.appcompat.widget.LinearLayoutCompat
+		android:id="@+id/logoContainer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:clickable="true"
+		android:focusable="true"
+		android:gravity="center_vertical"
+		android:orientation="horizontal"
+		android:paddingLeft="25dp"
+		android:paddingTop="25dp"
+		android:paddingRight="25dp"
+		android:paddingBottom="10dp"
+		app:layout_constraintBottom_toTopOf="@id/listApplications"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:src="@drawable/ic_icon"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"
+			android:layout_weight="1"
+			android:text="@string/app_name"
+			android:textSize="14sp" />
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:id="@+id/buttonClose"
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:background="?selectableItemBackgroundBorderless"
+			android:clickable="true"
+			android:focusable="true"
+			android:src="@drawable/ic_close"
+			android:tint="@color/textSecondary" />
+
+	</androidx.appcompat.widget.LinearLayoutCompat>
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/listApplications"
@@ -24,7 +154,7 @@
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/logoContainer"
 		tools:listitem="@layout/item_application" />
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -76,5 +206,67 @@
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
+
+	<FrameLayout
+		android:id="@+id/containerKeyboardInput"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@color/semiTransparentBlack"
+		android:translationZ="10dp"
+		android:visibility="gone">
+
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/editInput"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom"
+			android:background="@color/textSecondary"
+			android:ellipsize="none"
+			android:hint="@string/your_text_goes_here"
+			android:inputType="textAutoCorrect|text|textAutoComplete|textCapSentences"
+			android:padding="20dp"
+			android:textColor="@android:color/black"
+			android:textCursorDrawable="@null"
+			android:textSize="16sp" />
+
+	</FrameLayout>
+
+	<FrameLayout
+		android:id="@+id/containerVoiceInput"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@color/semiTransparentBlack"
+		android:clickable="true"
+		android:focusable="true"
+		android:translationZ="10dp"
+		android:visibility="gone">
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:id="@+id/imageMicrophone"
+			android:layout_width="120dp"
+			android:layout_height="120dp"
+			android:layout_gravity="center"
+			android:src="@drawable/ic_circle" />
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:layout_width="64dp"
+			android:layout_height="64dp"
+			android:layout_gravity="center"
+			android:src="@drawable/ic_microphone"
+			android:tint="@color/accent" />
+
+		<com.google.android.material.floatingactionbutton.FloatingActionButton
+			android:id="@+id/buttonCancelVoiceInput"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal|bottom"
+			android:layout_margin="30dp"
+			android:contentDescription="@string/cancel_voice_input"
+			android:src="@drawable/ic_close"
+			app:backgroundTint="@color/accent"
+			app:fabCustomSize="64dp"
+			app:tint="@color/textPrimary" />
+
+	</FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

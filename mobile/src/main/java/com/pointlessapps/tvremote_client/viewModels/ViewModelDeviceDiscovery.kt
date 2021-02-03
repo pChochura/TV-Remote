@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +20,7 @@ import com.pointlessapps.tvremote_client.adapters.AdapterDevice
 import com.pointlessapps.tvremote_client.fragments.FragmentBase
 import com.pointlessapps.tvremote_client.fragments.FragmentDevicePairing
 import com.pointlessapps.tvremote_client.fragments.FragmentRemote
+import com.pointlessapps.tvremote_client.fragments.FragmentSettings
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 import com.pointlessapps.tvremote_client.utils.*
 import kotlinx.android.synthetic.main.fragment_device_discovery.view.*
@@ -69,10 +69,7 @@ class ViewModelDeviceDiscovery(activity: AppCompatActivity, private val root: Vi
 
     fun setDeviceListener() {
         deviceWrapper.apply {
-            setOnConnectFailedListener {
-                context.saveDeviceInfo(null)
-                setState(STATE.FAILED)
-            }
+            setOnConnectFailedListener { setState(STATE.FAILED) }
             setOnConnectingListener { setState(STATE.LOADING) }
             setOnConnectedListener {
                 onChangeFragmentListener?.invoke(FragmentRemote())
@@ -109,6 +106,9 @@ class ViewModelDeviceDiscovery(activity: AppCompatActivity, private val root: Vi
             context.saveDeviceInfo(null)
             startDiscovery()
             setState(STATE.SEARCHING)
+        }
+        root.buttonSettings.setOnClickListener {
+            onChangeFragmentListener?.invoke(FragmentSettings())
         }
     }
 
@@ -147,4 +147,5 @@ class ViewModelDeviceDiscovery(activity: AppCompatActivity, private val root: Vi
         FOUND(false, false, false, true, false),
         NO_DEVICES(true, true, false, false, true, R.string.no_devices_found)
     }
+
 }

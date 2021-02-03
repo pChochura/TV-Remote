@@ -17,7 +17,7 @@ class DeviceListenerImpl(private val deviceWrapper: DeviceWrapper) : Device.List
     override fun onDisconnected(device: Device) { deviceWrapper.onDisconnected?.invoke(device) }
     override fun onHideIme(device: Device) { deviceWrapper.onHideIme?.invoke(device) }
     override fun onStartVoice(device: Device) { deviceWrapper.onStartVoice?.invoke(device) }
-    override fun onVoiceSoundLevel(device: Device, voiceSoundLevel: Int) = Unit
+    override fun onVoiceSoundLevel(device: Device, voiceSoundLevel: Int) { deviceWrapper.onVoiceSoundLevel?.invoke(device, voiceSoundLevel) }
     override fun onStopVoice(device: Device) { deviceWrapper.onStopVoice?.invoke(device) }
     override fun onConfigureSuccess(device: Device) = Unit
     override fun onConfigureFailure(device: Device, p1: Int) = Unit
@@ -25,6 +25,6 @@ class DeviceListenerImpl(private val deviceWrapper: DeviceWrapper) : Device.List
     override fun onDeveloperStatus(device: Device, p1: Boolean) = Unit
     override fun onBugReportStatus(device: Device, p1: Int) = Unit
     override fun onCompletionInfo(device: Device, infos: Array<out CompletionInfo>) { deviceWrapper.onCompletionInfo?.invoke(device) }
-    override fun onShowIme(device: Device, editorInfo: EditorInfo, p2: Boolean, extractedText: ExtractedText) { deviceWrapper.onShowIme?.invoke(device, editorInfo) }
+    override fun onShowIme(device: Device, editorInfo: EditorInfo, p2: Boolean, extractedText: ExtractedText?) { deviceWrapper.onShowIme?.invoke(device, editorInfo, extractedText) }
     override fun onAsset(device: Device, p1: String?, p2: MutableMap<String, String>?, p3: ByteArray?) = Unit
 }

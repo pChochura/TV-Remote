@@ -11,6 +11,11 @@ class SwipeTouchHandler(private val onActionListener: (ACTION) -> Unit) : View.O
         LONG_CLICK, CLICK, SWIPE_LEFT, SWIPE_RIGHT, SWIPE_UP, SWIPE_DOWN
     }
 
+    companion object {
+        const val LONG_CLICK_TIME = 500L
+        const val CLICK_POSITION_THRESHOLD = 50f
+    }
+
     private var startPos = 0f to 0f
     private var startTime = 0L
     private val longClickTimer = Timer()
@@ -32,7 +37,7 @@ class SwipeTouchHandler(private val onActionListener: (ACTION) -> Unit) : View.O
             MotionEvent.ACTION_MOVE -> {
                 val xDiff = event.x - startPos.first
                 val yDiff = event.y - startPos.second
-                if (abs(xDiff) >= 50f && abs(yDiff) >= 50f) {
+                if (abs(xDiff) >= CLICK_POSITION_THRESHOLD && abs(yDiff) >= CLICK_POSITION_THRESHOLD) {
                     longClickTask.cancel()
                     longClickTask = getLongClickTask()
                 }
@@ -40,15 +45,15 @@ class SwipeTouchHandler(private val onActionListener: (ACTION) -> Unit) : View.O
             MotionEvent.ACTION_DOWN -> {
                 startPos = event.x to event.y
                 startTime = System.currentTimeMillis()
-                longClickTimer.schedule(longClickTask, 1000)
+                longClickTimer.schedule(longClickTask, LONG_CLICK_TIME)
             }
             MotionEvent.ACTION_UP -> {
                 longClickTask.cancel()
                 longClickTask = getLongClickTask()
                 val xDiff = event.x - startPos.first
                 val yDiff = event.y - startPos.second
-                if (abs(xDiff) < 50f && abs(yDiff) < 50f) {
-                    if (System.currentTimeMillis() - startTime <= 1000) {
+                if (abs(xDiff) < CLICK_POSITION_THRESHOLD && abs(yDiff) < CLICK_POSITION_THRESHOLD) {
+                    if (System.currentTimeMillis() - startTime <= LONG_CLICK_TIME) {
                         v.performClick()
                         onActionListener(ACTION.CLICK)
                         return true

@@ -6,4 +6,6 @@
     <color name="background">#212121</color>
     <color name="textPrimary">#ffffff</color>
     <color name="textSecondary">#929292</color>
+    <color name="semiTransparent">#B3FFFFFF</color>
+    <color name="semiTransparentBlack">#B3000000</color>
 </resources>
