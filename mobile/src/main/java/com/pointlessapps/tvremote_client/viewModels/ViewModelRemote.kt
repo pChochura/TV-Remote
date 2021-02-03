@@ -2,6 +2,7 @@ package com.pointlessapps.tvremote_client.viewModels
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,6 +11,7 @@ import android.os.Looper
 import android.service.quicksettings.TileService
 import android.view.KeyEvent
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,6 +22,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.tv.support.remote.core.Device
+import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.adapters.AdapterApplication
 import com.pointlessapps.tvremote_client.models.Application
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
@@ -167,22 +170,38 @@ class ViewModelRemote(
     }
 
     private fun setVoiceInputListener() {
-        root.imageMicrophone.scaleAnimation()
-        deviceWrapper.setOnStartVoiceListener {
-            if (ContextCompat.checkSelfPermission(
-                    context,
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
                     Manifest.permission.RECORD_AUDIO
-                ) != PackageManager.PERMISSION_GRANTED
+                )
             ) {
+                Dialog(activity).apply {
+                    setTitle(R.string.voice_search_permission)
+                    setContentView(R.layout.dialog_message)
+                    setOnDismissListener {
+                        ActivityCompat.requestPermissions(
+                            activity,
+                            arrayOf(Manifest.permission.RECORD_AUDIO),
+                            REQUEST_CODE_AUDIO
+                        )
+                    }
+                }.show()
+            } else {
                 ActivityCompat.requestPermissions(
                     activity,
                     arrayOf(Manifest.permission.RECORD_AUDIO),
                     REQUEST_CODE_AUDIO
                 )
-                it.stopVoice()
-
-                return@setOnStartVoiceListener
             }
+        }
+
+        root.imageMicrophone.scaleAnimation()
+        deviceWrapper.setOnStartVoiceListener {
             root.imageMicrophone.scaleAnimation()
             root.containerVoiceInput.isVisible = true
         }
@@ -195,15 +214,12 @@ class ViewModelRemote(
         }
     }
 
-    fun onPermissionResult(requestCode: Int, grantResults: IntArray): Boolean {
-        if (requestCode == REQUEST_CODE_AUDIO && grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
-            deviceWrapper.device?.startVoice()
-
-            return true
-        }
-
-        return false
-    }
+    fun onPermissionResult(requestCode: Int, grantResults: IntArray) =
+        (requestCode == REQUEST_CODE_AUDIO && grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED).takeIf { it }
+            ?.also {
+                Toast.makeText(context, R.string.now_you_can_use_voice_search, Toast.LENGTH_SHORT)
+                    .show()
+            } ?: false
 
     fun setTouchHandler() {
         root.imageGestureNavigation.isVisible = true

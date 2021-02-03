@@ -36,4 +36,7 @@
 	<string name="show_dpad_subtitle">Use DPad instead of gesture navigation</string>
 	<string name="your_text_goes_here">Your text goes here</string>
 	<string name="cancel_voice_input">Cancel voice input</string>
+	<string name="now_you_can_use_voice_search">Now you can use voice search!</string>
+	<string name="voice_search_permission">Voice search permission</string>
+	<string name="voice_search_permission_rationale">If you want to use voice search on your TV you have to agree to record your voice. Your voice will be recorder ONLY when the TV requires it.</string>
 </resources>

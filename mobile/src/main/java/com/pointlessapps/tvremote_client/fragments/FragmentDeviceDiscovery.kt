@@ -18,7 +18,7 @@ class FragmentDeviceDiscovery : FragmentBaseImpl() {
         ).get(ViewModelDeviceDiscovery::class.java)
 
         onPauseActivity = { viewModel.onPauseActivityListener?.invoke() }
-//        onResumeActivity = { viewModel.onResumeActivityListener?.invoke() }
+        onResumeActivity = { viewModel.onResumeActivityListener?.invoke() }
         viewModel.onChangeFragmentListener = onChangeFragment
         viewModel.setDeviceListener()
         viewModel.loadDeviceInfo()

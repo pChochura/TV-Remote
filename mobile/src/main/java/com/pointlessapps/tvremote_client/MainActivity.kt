@@ -4,11 +4,8 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.pointlessapps.tvremote_client.fragments.FragmentDeviceDiscovery
 import com.pointlessapps.tvremote_client.managers.FragmentManager
-import com.pointlessapps.tvremote_client.utils.Utils
-import com.pointlessapps.tvremote_client.viewModels.ViewModelDevice
 
 class MainActivity : AppCompatActivity() {
 

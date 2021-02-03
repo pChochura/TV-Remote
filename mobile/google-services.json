@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "782060601372",
+    "project_id": "tv-remote-64cb2",
+    "storage_bucket": "tv-remote-64cb2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782060601372:android:61cc68cf4149176b04dfd9",
+        "android_client_info": {
+          "package_name": "com.pointlessapps.tvremote_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782060601372-6bhi6vtp0nclbifpdefdk2vtufprasvg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pointlessapps.tvremote_client",
+            "certificate_hash": "300a03cf5360cf4c5c5cfe796a7844ca288336b9"
+          }
+        },
+        {
+          "client_id": "782060601372-ikrlf9kq06i8orgeb9i2kfqju9tei0pp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr2ZHdsGJU0Ee9VnhYlLnLo-XVv-XgvNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782060601372-ikrlf9kq06i8orgeb9i2kfqju9tei0pp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
