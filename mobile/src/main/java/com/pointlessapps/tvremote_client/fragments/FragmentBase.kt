@@ -1,21 +1,18 @@
 package com.pointlessapps.tvremote_client.fragments
 
 import android.view.KeyEvent
-import android.view.ViewGroup
-import androidx.annotation.LayoutRes
+import androidx.viewbinding.ViewBinding
 
-interface FragmentBase {
-    @LayoutRes
-    fun getLayoutId(): Int
+interface FragmentBase<T : ViewBinding> {
 
     fun created() = Unit
     fun refreshed() = Unit
 
-    fun root(): ViewGroup? = null
+    fun root(): T? = null
 
     var forceRefresh: Boolean
 
-    var onChangeFragment: ((FragmentBase) -> Unit)?
+    var onChangeFragment: ((FragmentBase<*>) -> Unit)?
     var onPopBackStack: (() -> Unit)?
     var onDispatchKeyEvent: ((KeyEvent) -> Boolean)?
     var onPauseActivity: (() -> Unit)?

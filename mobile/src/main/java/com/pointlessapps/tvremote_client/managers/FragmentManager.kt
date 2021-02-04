@@ -9,14 +9,14 @@ import com.pointlessapps.tvremote_client.fragments.FragmentBase
 
 class FragmentManager private constructor(
     private val fragmentManager: androidx.fragment.app.FragmentManager,
-    private var currentFragment: FragmentBase
+    private var currentFragment: FragmentBase<*>
 ) {
 
     @IdRes
     private var containerId: Int? = null
 
     companion object {
-        fun of(activity: FragmentActivity, fragment: FragmentBase) =
+        fun of(activity: FragmentActivity, fragment: FragmentBase<*>) =
             FragmentManager(activity.supportFragmentManager, fragment)
     }
 
@@ -24,7 +24,7 @@ class FragmentManager private constructor(
         prepareFragment(currentFragment)
     }
 
-    private fun prepareFragment(fragment: FragmentBase) {
+    private fun prepareFragment(fragment: FragmentBase<*>) {
         fragment.onChangeFragment = { setFragment(it.apply { prepareFragment(this) }) }
         fragment.onPopBackStack = { fragmentManager.popBackStack() }
     }
@@ -38,7 +38,7 @@ class FragmentManager private constructor(
         }
     }
 
-    private fun setFragment(fragment: FragmentBase) {
+    private fun setFragment(fragment: FragmentBase<*>) {
         if (containerId === null) {
             throw NullPointerException("Fragment container cannot be null.")
         }

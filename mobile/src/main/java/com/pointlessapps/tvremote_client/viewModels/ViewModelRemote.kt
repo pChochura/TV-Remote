@@ -10,7 +10,6 @@ import android.os.Handler
 import android.os.Looper
 import android.service.quicksettings.TileService
 import android.view.KeyEvent
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -24,16 +23,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.tv.support.remote.core.Device
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.adapters.AdapterApplication
+import com.pointlessapps.tvremote_client.databinding.FragmentRemoteBinding
 import com.pointlessapps.tvremote_client.models.Application
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 import com.pointlessapps.tvremote_client.services.TvRemoteQTService
 import com.pointlessapps.tvremote_client.tv.TvRemote
 import com.pointlessapps.tvremote_client.utils.*
-import kotlinx.android.synthetic.main.fragment_remote.view.*
 
 class ViewModelRemote(
     private val activity: AppCompatActivity,
-    private val root: ViewGroup,
+    private val root: FragmentRemoteBinding,
     private val deviceWrapper: DeviceWrapper
 ) : AndroidViewModel(activity.application) {
 
@@ -160,7 +159,7 @@ class ViewModelRemote(
                 Utils.hideKeyboard(context, root.editInput)
             }
         }
-        Utils.setOnKeyboardChangeVisibilityListener(root) {
+        Utils.setOnKeyboardChangeVisibilityListener(root.root) {
             it.takeIf { !it }?.let { deviceWrapper.device?.endBatchEdit() }
         }
         root.editInput.setOnEditorActionListener { _, actionId, _ ->

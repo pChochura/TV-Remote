@@ -2,16 +2,15 @@ package com.pointlessapps.tvremote_client.viewModels
 
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.AndroidViewModel
+import com.pointlessapps.tvremote_client.databinding.FragmentDevicePairingBinding
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
-import kotlinx.android.synthetic.main.fragment_device_pairing.view.*
 
 class ViewModelDevicePairing(
     activity: AppCompatActivity,
-    private val root: ViewGroup,
+    private val root: FragmentDevicePairingBinding,
     private val deviceWrapper: DeviceWrapper
 ) : AndroidViewModel(activity.application) {
 
@@ -29,7 +28,7 @@ class ViewModelDevicePairing(
             "C", "D", "E", "F"
         ).forEach { symbol ->
             val id = context.resources.getIdentifier("button${symbol}", "id", context.packageName)
-            root.findViewById<View>(id).setOnClickListener {
+            root.root.findViewById<View>(id).setOnClickListener {
                 secret += symbol
                 refreshSecret()
             }
@@ -48,7 +47,7 @@ class ViewModelDevicePairing(
                 "id",
                 context.packageName
             )
-            root.findViewById<AppCompatTextView>(id).text =
+            root.root.findViewById<AppCompatTextView>(id).text =
                 if (secret.length >= it) secret[it - 1].toString() else ""
         }
 

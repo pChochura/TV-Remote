@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.pointlessapps.tvremote_client.databinding.ActivityMainBinding
 import com.pointlessapps.tvremote_client.fragments.FragmentDeviceDiscovery
 import com.pointlessapps.tvremote_client.managers.FragmentManager
 
@@ -16,7 +17,9 @@ class MainActivity : AppCompatActivity() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) setShowWhenLocked(
             true
         ) else window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
-        setContentView(R.layout.activity_main)
+
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         fragmentManager.showIn(R.id.fragmentContainer)
     }

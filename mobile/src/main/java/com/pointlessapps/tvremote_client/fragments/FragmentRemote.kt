@@ -1,8 +1,7 @@
 package com.pointlessapps.tvremote_client.fragments
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
-import com.pointlessapps.tvremote_client.R
+import com.pointlessapps.tvremote_client.databinding.FragmentRemoteBinding
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 import com.pointlessapps.tvremote_client.utils.Utils
 import com.pointlessapps.tvremote_client.utils.loadShowDpad
@@ -10,26 +9,24 @@ import com.pointlessapps.tvremote_client.utils.loadTurnTvOn
 import com.pointlessapps.tvremote_client.viewModels.ViewModelDevice
 import com.pointlessapps.tvremote_client.viewModels.ViewModelRemote
 
-class FragmentRemote : FragmentBaseImpl() {
+class FragmentRemote : FragmentBaseImpl<FragmentRemoteBinding>(FragmentRemoteBinding::class.java) {
 
     private lateinit var viewModel: ViewModelRemote
     private lateinit var deviceWrapper: DeviceWrapper
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        deviceWrapper = ViewModelProvider(
-            activity(),
-            Utils.getViewModelFactory(activity())
-        ).get(ViewModelDevice::class.java).deviceWrapper
+        deviceWrapper = Utils.getViewModel(ViewModelDevice::class.java, activity()).deviceWrapper
     }
 
-    override fun getLayoutId() = R.layout.fragment_remote
-
     override fun created() {
-        viewModel = ViewModelProvider(
+        viewModel = Utils.getViewModel(
+            ViewModelRemote::class.java,
+            activity(),
             this,
-            Utils.getViewModelFactory(activity(), root(), deviceWrapper)
-        ).get(ViewModelRemote::class.java)
+            root(),
+            deviceWrapper
+        )
 
         if (requireContext().loadTurnTvOn()) {
             viewModel.powerOn()

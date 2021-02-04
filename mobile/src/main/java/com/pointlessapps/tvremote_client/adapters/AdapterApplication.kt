@@ -1,17 +1,15 @@
 package com.pointlessapps.tvremote_client.adapters
 
-import android.view.View
-import com.pointlessapps.tvremote_client.R
+import com.pointlessapps.tvremote_client.databinding.ItemApplicationBinding
 import com.pointlessapps.tvremote_client.models.Application
-import kotlinx.android.synthetic.main.item_application.view.*
 
-class AdapterApplication(apps: List<Application>) : AdapterBase<Application>(apps.toMutableList()) {
+class AdapterApplication(apps: List<Application>) :
+    AdapterBase<Application, ItemApplicationBinding>(
+        apps.toMutableList(),
+        ItemApplicationBinding::class.java
+    ) {
 
-    override fun getLayoutId(viewType: Int) = R.layout.item_application
-
-    override fun onBind(root: View, position: Int) {
+    override fun onBind(root: ItemApplicationBinding, position: Int) {
         root.imageApplication.setImageResource(list[position].icon)
-
-        root.setOnClickListener { onClickListener?.invoke(list[position]) }
     }
 }

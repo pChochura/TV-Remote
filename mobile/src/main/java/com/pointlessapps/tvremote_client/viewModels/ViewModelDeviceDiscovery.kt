@@ -4,12 +4,10 @@ import android.os.Handler
 import android.os.Looper
 import android.transition.AutoTransition
 import android.transition.TransitionManager
-import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.tv.support.remote.core.Device
@@ -17,15 +15,18 @@ import com.google.android.tv.support.remote.discovery.DeviceInfo
 import com.google.android.tv.support.remote.discovery.Discoverer
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.adapters.AdapterDevice
+import com.pointlessapps.tvremote_client.databinding.FragmentDeviceDiscoveryBinding
 import com.pointlessapps.tvremote_client.fragments.FragmentBase
 import com.pointlessapps.tvremote_client.fragments.FragmentDevicePairing
 import com.pointlessapps.tvremote_client.fragments.FragmentRemote
 import com.pointlessapps.tvremote_client.fragments.FragmentSettings
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 import com.pointlessapps.tvremote_client.utils.*
-import kotlinx.android.synthetic.main.fragment_device_discovery.view.*
 
-class ViewModelDeviceDiscovery(activity: AppCompatActivity, private val root: ViewGroup) :
+class ViewModelDeviceDiscovery(
+    activity: AppCompatActivity,
+    private val root: FragmentDeviceDiscoveryBinding
+) :
     AndroidViewModel(activity.application) {
 
     private val context = activity.applicationContext
@@ -56,15 +57,12 @@ class ViewModelDeviceDiscovery(activity: AppCompatActivity, private val root: Vi
         }
     }
 
-    var onChangeFragmentListener: ((FragmentBase) -> Unit)? = null
+    var onChangeFragmentListener: ((FragmentBase<*>) -> Unit)? = null
     var onPauseActivityListener: (() -> Unit)? = null
     var onResumeActivityListener: (() -> Unit)? = null
 
     init {
-        ViewModelProvider(
-            activity,
-            Utils.getViewModelFactory(activity)
-        ).get(ViewModelDevice::class.java).deviceWrapper = deviceWrapper
+        Utils.getViewModel(ViewModelDevice::class.java, activity).deviceWrapper = deviceWrapper
     }
 
     fun setDeviceListener() {
@@ -130,7 +128,7 @@ class ViewModelDeviceDiscovery(activity: AppCompatActivity, private val root: Vi
         root.listDevices.isVisible = state.listDevicesVisible
         root.textLabel.isVisible = state.textLabelVisible
         state.label?.let { root.textLabel.setText(it) }
-        TransitionManager.beginDelayedTransition(root, AutoTransition())
+        TransitionManager.beginDelayedTransition(root.root, AutoTransition())
     }
 
     private enum class STATE(

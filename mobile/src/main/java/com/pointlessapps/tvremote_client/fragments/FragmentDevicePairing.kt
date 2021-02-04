@@ -1,37 +1,30 @@
 package com.pointlessapps.tvremote_client.fragments
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
-import com.pointlessapps.tvremote_client.R
+import com.pointlessapps.tvremote_client.databinding.FragmentDevicePairingBinding
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 import com.pointlessapps.tvremote_client.utils.Utils
 import com.pointlessapps.tvremote_client.viewModels.ViewModelDevice
 import com.pointlessapps.tvremote_client.viewModels.ViewModelDevicePairing
 
-class FragmentDevicePairing : FragmentBaseImpl() {
+class FragmentDevicePairing :
+    FragmentBaseImpl<FragmentDevicePairingBinding>(FragmentDevicePairingBinding::class.java) {
 
     private lateinit var deviceWrapper: DeviceWrapper
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        deviceWrapper = ViewModelProvider(
-            activity(),
-            Utils.getViewModelFactory(activity())
-        ).get(ViewModelDevice::class.java).deviceWrapper
+        deviceWrapper = Utils.getViewModel(ViewModelDevice::class.java, activity()).deviceWrapper
     }
 
-    override fun getLayoutId() = R.layout.fragment_device_pairing
-
     override fun created() {
-        val viewModel =
-            ViewModelProvider(
-                this,
-                Utils.getViewModelFactory(
-                    activity(),
-                    root(),
-                    deviceWrapper
-                )
-            ).get(ViewModelDevicePairing::class.java)
+        val viewModel = Utils.getViewModel(
+            ViewModelDevicePairing::class.java,
+            activity(),
+            this,
+            root(),
+            deviceWrapper
+        )
 
         viewModel.setKeyboard()
         viewModel.setDispatchKeyEventListener()

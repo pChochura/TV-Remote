@@ -1,21 +1,17 @@
 package com.pointlessapps.tvremote_client.fragments
 
-import androidx.lifecycle.ViewModelProvider
-import com.pointlessapps.tvremote_client.R
+import com.pointlessapps.tvremote_client.databinding.FragmentDeviceDiscoveryBinding
 import com.pointlessapps.tvremote_client.utils.Utils
 import com.pointlessapps.tvremote_client.viewModels.ViewModelDeviceDiscovery
 
-class FragmentDeviceDiscovery : FragmentBaseImpl() {
+class FragmentDeviceDiscovery :
+    FragmentBaseImpl<FragmentDeviceDiscoveryBinding>(FragmentDeviceDiscoveryBinding::class.java) {
 
     private lateinit var viewModel: ViewModelDeviceDiscovery
 
-    override fun getLayoutId() = R.layout.fragment_device_discovery
-
     override fun created() {
-        viewModel = ViewModelProvider(
-            this,
-            Utils.getViewModelFactory(activity(), root())
-        ).get(ViewModelDeviceDiscovery::class.java)
+        viewModel =
+            Utils.getViewModel(ViewModelDeviceDiscovery::class.java, activity(), this, root())
 
         onPauseActivity = { viewModel.onPauseActivityListener?.invoke() }
         onResumeActivity = { viewModel.onResumeActivityListener?.invoke() }

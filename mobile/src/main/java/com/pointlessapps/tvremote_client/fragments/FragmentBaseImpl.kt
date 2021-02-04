@@ -10,17 +10,19 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 import com.pointlessapps.tvremote_client.R
 
-abstract class FragmentBaseImpl : Fragment(), FragmentBase {
+abstract class FragmentBaseImpl<T : ViewBinding>(private val bindingClass: Class<T>) : Fragment(),
+    FragmentBase<T> {
 
-    private var rootView: ViewGroup? = null
+    private var rootView: T? = null
     override fun root() = rootView!!
 
     fun activity() = requireActivity() as AppCompatActivity
 
     override var forceRefresh = false
-    override var onChangeFragment: ((FragmentBase) -> Unit)? = null
+    override var onChangeFragment: ((FragmentBase<*>) -> Unit)? = null
     override var onPopBackStack: (() -> Unit)? = null
     override var onDispatchKeyEvent: ((KeyEvent) -> Boolean)? = null
     override var onPauseActivity: (() -> Unit)? = null
@@ -28,19 +30,26 @@ abstract class FragmentBaseImpl : Fragment(), FragmentBase {
 
     abstract override fun created()
 
+    @Suppress("UNCHECKED_CAST")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         if (rootView == null || forceRefresh) {
-            rootView = inflater.inflate(getLayoutId(), container, false) as ViewGroup
+            rootView = bindingClass.getMethod(
+                "inflate",
+                LayoutInflater::class.java,
+                ViewGroup::class.java,
+                Boolean::class.java
+            ).invoke(null, inflater, container, false) as T
 
             created()
         } else {
             refreshed()
         }
-        return rootView
+
+        return rootView?.root
     }
 
     override fun onCreateAnimator(transit: Int, enter: Boolean, nextAnim: Int): Animator? =

@@ -1,17 +1,18 @@
 package com.pointlessapps.tvremote_client.viewModels
 
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pointlessapps.tvremote_client.adapters.AdapterApplicationToggleable
+import com.pointlessapps.tvremote_client.databinding.FragmentSettingsBinding
 import com.pointlessapps.tvremote_client.utils.*
-import kotlinx.android.synthetic.main.fragment_settings.view.*
 
-class ViewModelSettings(private val activity: AppCompatActivity, private val root: ViewGroup) :
-    AndroidViewModel(activity.application) {
+class ViewModelSettings(
+    private val activity: AppCompatActivity,
+    private val root: FragmentSettingsBinding
+) : AndroidViewModel(activity.application) {
 
     fun prepareSettings() {
         root.toggleTurnOnTv.isChecked = activity.loadTurnTvOn()
