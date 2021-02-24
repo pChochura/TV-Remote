@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@color/background"
+	android:orientation="vertical"
+	android:minWidth="350dp"
+	android:padding="20dp">
+
+	<androidx.appcompat.widget.AppCompatTextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/your_app_name" />
+
+	<androidx.appcompat.widget.AppCompatEditText
+		android:id="@+id/editAppName"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dp"
+		android:background="@drawable/rounded_borders"
+		android:backgroundTint="@color/textSecondary"
+		android:hint="Youtube"
+		android:inputType="textShortMessage|textAutoCorrect|textAutoComplete|textCapWords"
+		android:padding="10dp"
+		android:textSize="14sp" />
+
+	<androidx.appcompat.widget.AppCompatTextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20dp"
+		android:text="@string/package_name" />
+
+	<androidx.appcompat.widget.AppCompatEditText
+		android:id="@+id/editPackageName"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dp"
+		android:background="@drawable/rounded_borders"
+		android:backgroundTint="@color/textSecondary"
+		android:hint="com.package.name.app"
+		android:inputType="textShortMessage|textNoSuggestions"
+		android:padding="10dp"
+		android:textSize="14sp" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/buttonAdd"
+		style="@style/Widget.MaterialComponents.Button.TextButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:layout_marginTop="20dp"
+		android:fontFamily="@font/montserrat_bold"
+		android:insetTop="0dp"
+		android:insetBottom="0dp"
+		android:minHeight="0dp"
+		android:text="@string/add"
+		android:textColor="@color/textPrimary" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

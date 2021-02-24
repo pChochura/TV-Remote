@@ -53,7 +53,7 @@ class FragmentManager private constructor(
             setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             replace(containerId!!, fragment as Fragment)
             addToBackStack(null)
-            commitAllowingStateLoss()
+            commit()
         }
     }
 

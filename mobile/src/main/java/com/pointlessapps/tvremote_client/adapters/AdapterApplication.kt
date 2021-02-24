@@ -10,6 +10,20 @@ class AdapterApplication(apps: List<Application>) :
     ) {
 
     override fun onBind(root: ItemApplicationBinding, position: Int) {
-        root.imageApplication.setImageResource(list[position].icon)
+        if (list[position].icon == 0) {
+            root.imageApplication.post {
+                val width = root.imageApplication.width
+                val height = root.imageApplication.height
+                root.imageApplication.setImageBitmap(
+                    list[position].getImageBitmap(
+                        root.root.context,
+                        width,
+                        height
+                    )
+                )
+            }
+        } else {
+            root.imageApplication.setImageResource(list[position].icon)
+        }
     }
 }

@@ -28,10 +28,10 @@ class FragmentRemote : FragmentBaseImpl<FragmentRemoteBinding>(FragmentRemoteBin
             deviceWrapper
         )
 
-        if (requireContext().loadTurnTvOn()) {
+        if (requireActivity().loadTurnTvOn()) {
             viewModel.powerOn()
         }
-        if (requireContext().loadShowDpad()) {
+        if (requireActivity().loadShowDpad()) {
             viewModel.setDpad()
         } else {
             viewModel.setTouchHandler()

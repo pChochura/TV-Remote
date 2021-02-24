@@ -3,6 +3,7 @@ package com.pointlessapps.tvremote_client.utils
 import android.content.Context
 import android.graphics.Rect
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
@@ -42,5 +43,18 @@ object Utils {
     ) = view.viewTreeObserver.addOnGlobalLayoutListener {
         val rect = Rect().also { view.getWindowVisibleDisplayFrame(it) }
         onChangeVisibilityListener(view.rootView.height - (rect.bottom - rect.top) > 100)
+    }
+
+    @Suppress("DEPRECATION")
+    fun toggleShowOnLockScreen(activity: AppCompatActivity, enabled: Boolean) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+            activity.setShowWhenLocked(enabled)
+        } else {
+            if (enabled) {
+                activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+            } else {
+                activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+            }
+        }
     }
 }

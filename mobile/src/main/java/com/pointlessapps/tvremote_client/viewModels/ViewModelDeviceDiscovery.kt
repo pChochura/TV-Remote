@@ -1,5 +1,6 @@
 package com.pointlessapps.tvremote_client.viewModels
 
+import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
 import android.transition.AutoTransition
@@ -23,11 +24,11 @@ import com.pointlessapps.tvremote_client.fragments.FragmentSettings
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 import com.pointlessapps.tvremote_client.utils.*
 
+@SuppressLint("StaticFieldLeak")
 class ViewModelDeviceDiscovery(
-    activity: AppCompatActivity,
+    private val activity: AppCompatActivity,
     private val root: FragmentDeviceDiscoveryBinding
-) :
-    AndroidViewModel(activity.application) {
+) : AndroidViewModel(activity.application) {
 
     private val context = activity.applicationContext
     private val discoverer = Discoverer(context)
@@ -84,6 +85,10 @@ class ViewModelDeviceDiscovery(
     }
 
     fun loadDeviceInfo() {
+        if (!activity.loadOpenLastConnection()) {
+            activity.saveDeviceInfo(null)
+        }
+
         loadDevice(context.loadDeviceInfo() ?: return)
     }
 

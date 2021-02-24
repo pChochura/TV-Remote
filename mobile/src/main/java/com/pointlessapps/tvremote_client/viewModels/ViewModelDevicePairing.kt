@@ -1,5 +1,6 @@
 package com.pointlessapps.tvremote_client.viewModels
 
+import android.annotation.SuppressLint
 import android.view.KeyEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.pointlessapps.tvremote_client.databinding.FragmentDevicePairingBinding
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 
+@SuppressLint("StaticFieldLeak")
 class ViewModelDevicePairing(
     activity: AppCompatActivity,
     private val root: FragmentDevicePairingBinding,

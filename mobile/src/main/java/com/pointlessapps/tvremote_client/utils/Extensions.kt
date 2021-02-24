@@ -74,6 +74,30 @@ fun Context.loadShowDpad(): Boolean {
     }
 }
 
+fun Context.saveShowOnLockScreen(showOnLockScreen: Boolean) {
+    getSharedPreferences("tv_remote_prefs", Context.MODE_PRIVATE).edit().apply {
+        putBoolean("showOnLockScreen", showOnLockScreen)
+    }.apply()
+}
+
+fun Context.loadShowOnLockScreen(): Boolean {
+    getSharedPreferences("tv_remote_prefs", Context.MODE_PRIVATE).apply {
+        return getBoolean("showOnLockScreen", false)
+    }
+}
+
+fun Context.saveOpenLastConnection(openLastConnection: Boolean) {
+    getSharedPreferences("tv_remote_prefs", Context.MODE_PRIVATE).edit().apply {
+        putBoolean("openLastConnection", openLastConnection)
+    }.apply()
+}
+
+fun Context.loadOpenLastConnection(): Boolean {
+    getSharedPreferences("tv_remote_prefs", Context.MODE_PRIVATE).apply {
+        return getBoolean("openLastConnection", true)
+    }
+}
+
 fun Context.saveShortcuts(shortcuts: List<Application>) {
     getSharedPreferences("tv_remote_prefs", Context.MODE_PRIVATE).edit().apply {
         putString("shortcuts", Gson().toJson(shortcuts))

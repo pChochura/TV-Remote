@@ -39,4 +39,12 @@
 	<string name="now_you_can_use_voice_search">Now you can use voice search!</string>
 	<string name="voice_search_permission">Voice search permission</string>
 	<string name="voice_search_permission_rationale">If you want to use voice search on your TV you have to agree to record your voice. Your voice will be recorder ONLY when the TV requires it.</string>
+	<string name="show_on_lock_screen">Show on lock screen</string>
+	<string name="show_on_lock_screen_subtitle">Show the remote over the lock screen if the connection is established</string>
+	<string name="add">Add</string>
+	<string name="package_name">Package name</string>
+	<string name="your_app_name">Your app name</string>
+	<string name="add_custom_shortcut">Add a custom shortcut</string>
+	<string name="open_last_connection">Open last connection</string>
+	<string name="open_last_connection_subtitle">Open the remote immediately when there is a saved connection</string>
 </resources>

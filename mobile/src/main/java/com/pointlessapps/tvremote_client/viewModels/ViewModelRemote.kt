@@ -30,6 +30,7 @@ import com.pointlessapps.tvremote_client.services.TvRemoteQTService
 import com.pointlessapps.tvremote_client.tv.TvRemote
 import com.pointlessapps.tvremote_client.utils.*
 
+@SuppressLint("StaticFieldLeak")
 class ViewModelRemote(
     private val activity: AppCompatActivity,
     private val root: FragmentRemoteBinding,
