@@ -4,6 +4,8 @@
 
 <img src="https://github.com/pChochura/TV-Remote/blob/main/Screenshot%204.png" width="49%"/> <img src="https://github.com/pChochura/TV-Remote/blob/main/Screenshot%205.png" width="49%"/>
 
+<a href='https://play.google.com/store/apps/details?id=com.pointlessapps.tvremote_client&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="200"/></a>
+
 ## Description
 
 Application used to control your Android TV remotely. Devices can be connected using Wi-Fi or Bluetooth.
