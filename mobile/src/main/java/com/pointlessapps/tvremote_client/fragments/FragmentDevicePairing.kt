@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.pointlessapps.tvremote_client.App
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.databinding.FragmentDevicePairingBinding
 import com.pointlessapps.tvremote_client.viewModels.ViewModelDevicePairing
@@ -49,6 +50,7 @@ class FragmentDevicePairing :
 		onDispatchKeyEvent = lambda@{
 			if (it.keyCode == KeyEvent.KEYCODE_BACK) {
 				viewModel.disconnect()
+				viewModel.forgetDevice()
 				findNavController().navigateUp()
 
 				return@lambda true
