@@ -1,29 +1,34 @@
 package com.pointlessapps.tvremote_client.adapters
 
+import androidx.lifecycle.MutableLiveData
 import com.pointlessapps.tvremote_client.databinding.ItemApplicationBinding
 import com.pointlessapps.tvremote_client.models.Application
 
 class AdapterApplication(apps: List<Application>) :
-    AdapterBase<Application, ItemApplicationBinding>(
-        apps.toMutableList(),
-        ItemApplicationBinding::class.java
-    ) {
+	AdapterBase<Application, ItemApplicationBinding>(
+		MutableLiveData(apps),
+		ItemApplicationBinding::inflate
+	) {
 
-    override fun onBind(root: ItemApplicationBinding, position: Int) {
-        if (list[position].icon == 0) {
-            root.imageApplication.post {
-                val width = root.imageApplication.width
-                val height = root.imageApplication.height
-                root.imageApplication.setImageBitmap(
-                    list[position].getImageBitmap(
-                        root.root.context,
-                        width,
-                        height
-                    )
-                )
-            }
-        } else {
-            root.imageApplication.setImageResource(list[position].icon)
-        }
-    }
+	init {
+		setHasStableIds(true)
+	}
+
+	override fun onBind(root: ItemApplicationBinding, item: Application) {
+		if (item.icon == 0) {
+			root.imageApplication.post {
+				val width = root.imageApplication.width
+				val height = root.imageApplication.height
+				root.imageApplication.setImageBitmap(
+					item.getImageBitmap(
+						root.root.context,
+						width,
+						height
+					)
+				)
+			}
+		} else {
+			root.imageApplication.setImageResource(item.icon)
+		}
+	}
 }

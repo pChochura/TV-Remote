@@ -2,41 +2,33 @@ package com.pointlessapps.tvremote_client
 
 import android.os.Bundle
 import android.view.KeyEvent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.pointlessapps.tvremote_client.databinding.ActivityMainBinding
-import com.pointlessapps.tvremote_client.fragments.FragmentDeviceDiscovery
-import com.pointlessapps.tvremote_client.managers.FragmentManager
+import com.pointlessapps.tvremote_client.fragments.FragmentBase
 import com.pointlessapps.tvremote_client.utils.Utils
-import com.pointlessapps.tvremote_client.utils.loadShowOnLockScreen
+import com.pointlessapps.tvremote_client.viewModels.ViewModelMain
 
 class MainActivity : AppCompatActivity() {
 
-    private val fragmentManager = FragmentManager.of(this, FragmentDeviceDiscovery())
+	private val viewModel by viewModels<ViewModelMain>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setTheme(R.style.AppTheme)
 
-        setTheme(R.style.AppTheme)
-        if (loadShowOnLockScreen()) {
-            Utils.toggleShowOnLockScreen(this, true)
-        }
+		lifecycleScope.launchWhenCreated {
+			if (viewModel.getSettings().showOnLockScreen) {
+				Utils.toggleShowOnLockScreen(this@MainActivity, true)
+			}
+		}
 
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+		val binding = ActivityMainBinding.inflate(layoutInflater)
+		setContentView(binding.root)
+	}
 
-        fragmentManager.showIn(R.id.fragmentContainer)
-    }
-
-    override fun dispatchKeyEvent(event: KeyEvent) =
-        fragmentManager.dispatchKeyEvent(event) ?: super.dispatchKeyEvent(event)
-
-    override fun onPause() {
-        fragmentManager.onPauseActivity()
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        fragmentManager.onResumeActivity()
-    }
+	override fun dispatchKeyEvent(event: KeyEvent) =
+		(supportFragmentManager.findFragmentById(R.id.fragmentContainer)?.childFragmentManager?.fragments?.firstOrNull() as? FragmentBase<*>)
+			?.onDispatchKeyEvent?.invoke(event) ?: super.dispatchKeyEvent(event)
 }

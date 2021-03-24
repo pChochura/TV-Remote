@@ -47,4 +47,5 @@
 	<string name="add_custom_shortcut">Add a custom shortcut</string>
 	<string name="open_last_connection">Open last connection</string>
 	<string name="open_last_connection_subtitle">Open the remote immediately when there is a saved connection</string>
+	<string name="device_discovery">Device discovery</string>
 </resources>

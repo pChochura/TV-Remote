@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.appcompat.widget.LinearLayoutCompat
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/fragmentContainer"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:background="@color/background"
-	android:layout_height="match_parent"
-	android:orientation="vertical" />
+	android:layout_height="match_parent">
+
+	<fragment
+		android:id="@+id/fragmentContainer"
+		android:name="androidx.navigation.fragment.NavHostFragment"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@color/background"
+		android:orientation="vertical"
+		app:defaultNavHost="true"
+		app:navGraph="@navigation/main_navigation"
+		tools:ignore="FragmentTagUsage" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

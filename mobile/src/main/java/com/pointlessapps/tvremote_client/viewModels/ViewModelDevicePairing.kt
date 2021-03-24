@@ -1,73 +1,32 @@
 package com.pointlessapps.tvremote_client.viewModels
 
-import android.annotation.SuppressLint
-import android.view.KeyEvent
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatTextView
+import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.pointlessapps.tvremote_client.databinding.FragmentDevicePairingBinding
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.pointlessapps.tvremote_client.App
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 
-@SuppressLint("StaticFieldLeak")
-class ViewModelDevicePairing(
-    activity: AppCompatActivity,
-    private val root: FragmentDevicePairingBinding,
-    private val deviceWrapper: DeviceWrapper
-) : AndroidViewModel(activity.application) {
+class ViewModelDevicePairing(application: Application) : AndroidViewModel(application) {
 
-    private val context = activity.applicationContext
-    private var secret = ""
+	private val deviceWrapper = DeviceWrapper((application as App).device)
+	private val _secret = MutableLiveData("")
+	val secret: LiveData<String>
+		get() = _secret
 
-    var onPopBackStackListener: (() -> Unit)? = null
-    var onDispatchKeyEventListener: ((KeyEvent) -> Boolean)? = null
+	fun disconnect() {
+		deviceWrapper.device!!.disconnect()
+	}
 
-    fun setKeyboard() {
-        arrayOf(
-            "0", "1", "2", "3",
-            "4", "5", "6", "7",
-            "8", "9", "A", "B",
-            "C", "D", "E", "F"
-        ).forEach { symbol ->
-            val id = context.resources.getIdentifier("button${symbol}", "id", context.packageName)
-            root.root.findViewById<View>(id).setOnClickListener {
-                secret += symbol
-                refreshSecret()
-            }
-        }
+	fun setPairingSecret(secret: String) {
+		deviceWrapper.device!!.setPairingSecret(secret)
+	}
 
-        root.buttonClear.setOnClickListener {
-            secret = ""
-            refreshSecret()
-        }
-    }
+	fun addSymbol(symbol: String) {
+		_secret.value = _secret.value?.plus(symbol)
+	}
 
-    private fun refreshSecret() {
-        (1..4).forEach {
-            val id = context.resources.getIdentifier(
-                "textSecret${it}",
-                "id",
-                context.packageName
-            )
-            root.root.findViewById<AppCompatTextView>(id).text =
-                if (secret.length >= it) secret[it - 1].toString() else ""
-        }
-
-        if (secret.length == 4) {
-            deviceWrapper.device!!.setPairingSecret(secret)
-            onPopBackStackListener?.invoke()
-        }
-    }
-
-    fun setDispatchKeyEventListener() {
-        onDispatchKeyEventListener = lambda@{
-            if (it.keyCode == KeyEvent.KEYCODE_BACK) {
-                deviceWrapper.device!!.disconnect()
-                onPopBackStackListener?.invoke()
-
-                return@lambda true
-            }
-            return@lambda false
-        }
-    }
+	fun clearSecret() {
+		_secret.value = ""
+	}
 }

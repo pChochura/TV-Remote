@@ -2,49 +2,54 @@ package com.pointlessapps.tvremote_client.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.pointlessapps.tvremote_client.utils.InflateMethod
 
-abstract class AdapterBase<T, Binding : ViewBinding>(
-    protected open val list: MutableList<T>,
-    private val bindingClass: Class<Binding>
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class AdapterBase<ItemType, Binding : ViewBinding>(
+	protected val list: LiveData<List<ItemType>>,
+	private val inflateMethod: InflateMethod<Binding>
+) : RecyclerView.Adapter<AdapterBase<ItemType, Binding>.ViewHolder>() {
 
-    private lateinit var binding: Binding
-    var onClickListener: ((T) -> Unit)? = null
+	private val observer = { _: List<ItemType> -> notifyDataSetChanged() }
 
-    init {
-        @Suppress("LeakingThis")
-        setHasStableIds(true)
-    }
+	var onClickListener: ((ItemType) -> Unit)? = null
 
-    abstract fun onBind(root: Binding, position: Int)
-    open fun onCreate(root: Binding) = Unit
+	init {
+		list.observeForever(observer)
+	}
 
-    @Suppress("UNCHECKED_CAST")
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        binding = bindingClass.getMethod(
-            "inflate",
-            LayoutInflater::class.java,
-            ViewGroup::class.java,
-            Boolean::class.java
-        ).invoke(null, LayoutInflater.from(parent.context), parent, false) as Binding
+	override fun onViewDetachedFromWindow(holder: ViewHolder) {
+		list.removeObserver(observer)
+		super.onViewDetachedFromWindow(holder)
+	}
 
-        return object : RecyclerView.ViewHolder(binding.root) {
-            init {
-                onCreate(binding)
-                binding.root.setOnClickListener {
-                    onClickListener?.invoke(list[adapterPosition])
-                }
-            }
-        }
-    }
+	abstract fun onBind(root: Binding, item: ItemType)
+	open fun onCreate(root: Binding) = Unit
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        onBind(binding, position)
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+		val binding = inflateMethod.invoke(LayoutInflater.from(parent.context), parent, false)
 
-    override fun getItemCount() = list.size
+		return object : ViewHolder(binding) {
+			init {
+				onCreate(binding)
+				binding.root.setOnClickListener {
+					onClickListener?.invoke(
+						list.value?.getOrNull(adapterPosition) ?: return@setOnClickListener
+					)
+				}
+			}
+		}
+	}
 
-    override fun getItemId(position: Int) = list[position].hashCode().toLong()
+	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+		onBind(holder.binding, list.value?.getOrNull(position) ?: return)
+	}
+
+	override fun getItemCount() = list.value?.size ?: 0
+
+	override fun getItemId(position: Int) = list.value?.getOrNull(position).hashCode().toLong()
+
+	open inner class ViewHolder(val binding: Binding) : RecyclerView.ViewHolder(binding.root)
 }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/main_navigation"
+	app:startDestination="@id/deviceDiscovery">
+
+	<fragment
+		android:id="@+id/deviceDiscovery"
+		android:name="com.pointlessapps.tvremote_client.fragments.FragmentDeviceDiscovery"
+		android:label="@string/device_discovery"
+		tools:layout="@layout/fragment_device_discovery">
+		<action
+			android:id="@+id/action_deviceDiscovery_to_settings"
+			app:destination="@id/settings"
+			app:enterAnim="@anim/fade_in"
+			app:exitAnim="@anim/fade_out"
+			app:popEnterAnim="@anim/fade_in"
+			app:popExitAnim="@anim/fade_out" />
+		<action
+			android:id="@+id/action_deviceDiscovery_to_devicePairing"
+			app:destination="@id/devicePairing"
+			app:enterAnim="@anim/fade_in"
+			app:exitAnim="@anim/fade_out"
+			app:popEnterAnim="@anim/fade_in"
+			app:popExitAnim="@anim/fade_out" />
+		<action
+			android:id="@+id/action_deviceDiscovery_to_remote"
+			app:destination="@id/remote"
+			app:enterAnim="@anim/fade_in"
+			app:exitAnim="@anim/fade_out"
+			app:popEnterAnim="@anim/fade_in"
+			app:popExitAnim="@anim/fade_out" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/devicePairing"
+		android:name="com.pointlessapps.tvremote_client.fragments.FragmentDevicePairing"
+		android:label="@string/device_discovery"
+		tools:layout="@layout/fragment_device_pairing">
+		<action
+			android:id="@+id/action_devicePairing_to_remote"
+			app:destination="@id/remote"
+			app:enterAnim="@anim/fade_in"
+			app:exitAnim="@anim/fade_out"
+			app:popEnterAnim="@anim/fade_in"
+			app:popExitAnim="@anim/fade_out" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/settings"
+		android:name="com.pointlessapps.tvremote_client.fragments.FragmentSettings"
+		android:label="@string/device_discovery"
+		tools:layout="@layout/fragment_settings" />
+
+	<fragment
+		android:id="@+id/remote"
+		android:name="com.pointlessapps.tvremote_client.fragments.FragmentRemote"
+		android:label="@string/device_discovery"
+		tools:layout="@layout/fragment_remote">
+		<action
+			android:id="@+id/action_remote_to_deviceDiscovery"
+			app:destination="@id/deviceDiscovery"
+			app:enterAnim="@anim/fade_in"
+			app:exitAnim="@anim/fade_out"
+			app:popEnterAnim="@anim/fade_in"
+			app:popExitAnim="@anim/fade_out"
+			app:popUpTo="@id/remote"
+			app:popUpToInclusive="true" />
+	</fragment>
+
+</navigation>

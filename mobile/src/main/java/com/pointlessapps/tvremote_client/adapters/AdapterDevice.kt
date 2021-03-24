@@ -1,13 +1,18 @@
 package com.pointlessapps.tvremote_client.adapters
 
+import androidx.lifecycle.MutableLiveData
 import com.google.android.tv.support.remote.discovery.DeviceInfo
 import com.pointlessapps.tvremote_client.databinding.ItemDeviceBinding
 
-class AdapterDevice(devices: MutableList<DeviceInfo>) :
-    AdapterBase<DeviceInfo, ItemDeviceBinding>(devices, ItemDeviceBinding::class.java) {
+class AdapterDevice(devices: List<DeviceInfo>) :
+	AdapterBase<DeviceInfo, ItemDeviceBinding>(MutableLiveData(devices), ItemDeviceBinding::inflate) {
 
-    override fun onBind(root: ItemDeviceBinding, position: Int) {
-        root.textName.text = list[position].name
-        root.textAddress.text = list[position].uri.host
-    }
+	init {
+		setHasStableIds(true)
+	}
+
+	override fun onBind(root: ItemDeviceBinding, item: DeviceInfo) {
+		root.textName.text = item.name
+		root.textAddress.text = item.uri.host
+	}
 }

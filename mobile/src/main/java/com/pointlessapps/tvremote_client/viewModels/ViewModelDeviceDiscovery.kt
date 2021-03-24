@@ -1,154 +1,134 @@
 package com.pointlessapps.tvremote_client.viewModels
 
-import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import android.transition.AutoTransition
-import android.transition.TransitionManager
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.lifecycle.AndroidViewModel
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.android.tv.support.remote.core.Device
 import com.google.android.tv.support.remote.discovery.DeviceInfo
 import com.google.android.tv.support.remote.discovery.Discoverer
+import com.pointlessapps.tvremote_client.App
 import com.pointlessapps.tvremote_client.R
-import com.pointlessapps.tvremote_client.adapters.AdapterDevice
-import com.pointlessapps.tvremote_client.databinding.FragmentDeviceDiscoveryBinding
-import com.pointlessapps.tvremote_client.fragments.FragmentBase
-import com.pointlessapps.tvremote_client.fragments.FragmentDevicePairing
-import com.pointlessapps.tvremote_client.fragments.FragmentRemote
-import com.pointlessapps.tvremote_client.fragments.FragmentSettings
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 import com.pointlessapps.tvremote_client.utils.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-@SuppressLint("StaticFieldLeak")
-class ViewModelDeviceDiscovery(
-    private val activity: AppCompatActivity,
-    private val root: FragmentDeviceDiscoveryBinding
-) : AndroidViewModel(activity.application) {
+class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(application) {
 
-    private val context = activity.applicationContext
-    private val discoverer = Discoverer(context)
-    private val deviceWrapper = DeviceWrapper(null)
-    private val devices = mutableListOf<DeviceInfo>()
-    private val handler = Handler(Looper.getMainLooper())
-    private val deviceListener = DeviceListenerImpl(deviceWrapper)
-    private val discoveryListener = object : DiscoveryListenerImpl() {
-        override fun onStartDiscoveryFailed(errorCode: Int) = setState(STATE.FAILED)
-        override fun onDeviceFound(deviceInfo: DeviceInfo) {
-            if (context.loadDeviceInfo() != null || devices.find { it.uri == deviceInfo.uri } != null) {
-                return
-            }
+	private val preferencesService = (application as App).preferencesService
+	private val _state = MutableLiveData(State.SEARCHING)
+	val state: LiveData<State>
+		get() = _state
 
-            devices.add(deviceInfo)
-            root.listDevices.adapter?.notifyDataSetChanged()
-            setState(STATE.FOUND)
-        }
+	private val _devices = MutableLiveData(listOf<DeviceInfo>())
+	val devices: LiveData<List<DeviceInfo>>
+		get() = _devices
 
-        override fun onDeviceLost(deviceInfo: DeviceInfo) {
-            devices.removeIf { it.uri == deviceInfo.uri }
-            root.listDevices.adapter?.notifyDataSetChanged()
+	private val discoverer = Discoverer(application)
+	private val deviceWrapper = DeviceWrapper(null)
+	private val handler = Handler(Looper.getMainLooper())
+	private val discoveryListener = object : DiscoveryListenerImpl() {
+		override fun onStartDiscoveryFailed(errorCode: Int) {
+			_state.value = State.FAILED
+		}
 
-            if (devices.isEmpty()) {
-                setState(STATE.NO_DEVICES)
-            }
-        }
-    }
+		override fun onDeviceFound(deviceInfo: DeviceInfo) {
+			viewModelScope.launch {
+				_state.postValue(State.FOUND)
 
-    var onChangeFragmentListener: ((FragmentBase<*>) -> Unit)? = null
-    var onPauseActivityListener: (() -> Unit)? = null
-    var onResumeActivityListener: (() -> Unit)? = null
+				val devices = _devices.value!!
+				if (getSettings().deviceInfo != null || devices.find { it.uri == deviceInfo.uri } != null) {
+					return@launch
+				}
 
-    init {
-        Utils.getViewModel(ViewModelDevice::class.java, activity).deviceWrapper = deviceWrapper
-    }
+				_devices.postValue(listOf(*devices.toTypedArray(), deviceInfo))
+			}
+		}
 
-    fun setDeviceListener() {
-        deviceWrapper.apply {
-            setOnConnectFailedListener { setState(STATE.FAILED) }
-            setOnConnectingListener { setState(STATE.LOADING) }
-            setOnConnectedListener {
-                onChangeFragmentListener?.invoke(FragmentRemote())
-            }
-            setOnDisconnectedListener { startDiscovery() }
-            setOnPairingRequiredListener {
-                setState(STATE.LOADING)
-                onChangeFragmentListener?.invoke(FragmentDevicePairing())
-            }
-        }
+		override fun onDeviceLost(deviceInfo: DeviceInfo) {
+			val devices = _devices.value!!
+			val filteredDevices =
+				listOf(*(devices.filterNot { it.uri == deviceInfo.uri }).toTypedArray())
+			_devices.value = filteredDevices
 
-        onPauseActivityListener = { discoverer.stopDiscovery() }
-        onResumeActivityListener = { startDiscovery() }
-    }
+			if (filteredDevices.isEmpty()) {
+				_state.value = State.NO_DEVICES
+			}
+		}
+	}
 
-    fun loadDeviceInfo() {
-        if (!activity.loadOpenLastConnection()) {
-            activity.saveDeviceInfo(null)
-        }
+	suspend fun getSettings() = preferencesService.getSettings().first()
 
-        loadDevice(context.loadDeviceInfo() ?: return)
-    }
+	fun setDeviceListener() {
+		deviceWrapper.apply {
+			setOnConnectFailedListener { _state.value = State.FAILED }
+			setOnConnectingListener { _state.value = State.LOADING }
+			setOnConnectedListener { _state.value = State.CONNECTED }
+			setOnDisconnectedListener { startDiscovery() }
+			setOnPairingRequiredListener { _state.value = State.PAIRING }
+		}
+	}
 
-    fun startDiscovery() {
-        discoverer.startDiscovery(discoveryListener, handler)
-        setState(STATE.SEARCHING)
-    }
+	fun loadDeviceInfo() {
+		viewModelScope.launch {
+			val settings = getSettings()
+			if (!settings.openLastConnection) {
+				preferencesService.setSettings(settings.also {
+					it.deviceInfo = null
+				})
 
-    fun setDeviceList() {
-        root.listDevices.apply {
-            adapter = AdapterDevice(devices).apply { onClickListener = { loadDevice(it) } }
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        }
-    }
+				return@launch
+			}
 
-    fun setClickListeners() {
-        root.buttonRetry.setOnClickListener {
-            context.saveDeviceInfo(null)
-            startDiscovery()
-            setState(STATE.SEARCHING)
-        }
-        root.buttonSettings.setOnClickListener {
-            onChangeFragmentListener?.invoke(FragmentSettings())
-        }
-    }
+			loadDevice(settings.deviceInfo ?: return@launch)
+		}
+	}
 
-    private fun loadDevice(deviceInfo: DeviceInfo) {
-        setState(STATE.LOADING)
-        context.saveDeviceInfo(deviceInfo)
-        deviceWrapper.device = Device.from(
-            context,
-            deviceInfo,
-            deviceListener,
-            handler
-        )
-    }
+	fun stopDiscovery() {
+		discoverer.stopDiscovery()
+	}
 
-    private fun setState(state: STATE) {
-        root.buttonRetry.isVisible = state.buttonRetryVisible
-        root.imageError.isVisible = state.imageErrorVisible
-        root.progress.isVisible = state.progressVisible
-        root.listDevices.isVisible = state.listDevicesVisible
-        root.textLabel.isVisible = state.textLabelVisible
-        state.label?.let { root.textLabel.setText(it) }
-        TransitionManager.beginDelayedTransition(root.root, AutoTransition())
-    }
+	fun startDiscovery() {
+		discoverer.startDiscovery(discoveryListener, handler)
+		_state.value = State.SEARCHING
+	}
 
-    private enum class STATE(
-        val buttonRetryVisible: Boolean,
-        val imageErrorVisible: Boolean,
-        val progressVisible: Boolean,
-        val listDevicesVisible: Boolean,
-        val textLabelVisible: Boolean,
-        @StringRes val label: Int? = null
-    ) {
-        LOADING(false, false, true, false, true, R.string.loading),
-        SEARCHING(false, false, true, false, true, R.string.searching),
-        FAILED(true, true, false, false, true, R.string.something_went_wrong),
-        FOUND(false, false, false, true, false),
-        NO_DEVICES(true, true, false, false, true, R.string.no_devices_found)
-    }
+	fun loadDevice(deviceInfo: DeviceInfo) {
+		_state.value = State.LOADING
+		val device = Device.from(
+			getApplication(),
+			deviceInfo,
+			deviceWrapper.deviceListener,
+			handler
+		)
+		getApplication<App>().device = device
+		deviceWrapper.device = device
+		viewModelScope.launch {
+			preferencesService.setSettings(getSettings().also {
+				it.deviceInfo = deviceInfo
+			})
+		}
+	}
+
+	enum class State(
+		val buttonRetryVisible: Boolean = false,
+		val imageErrorVisible: Boolean = false,
+		val progressVisible: Boolean = false,
+		val listDevicesVisible: Boolean = false,
+		val textLabelVisible: Boolean = false,
+		@StringRes val label: Int? = null
+	) {
+		LOADING(false, false, true, false, true, R.string.loading),
+		SEARCHING(false, false, true, false, true, R.string.searching),
+		FAILED(true, true, false, false, true, R.string.something_went_wrong),
+		FOUND(false, false, false, true, false),
+		NO_DEVICES(true, true, false, false, true, R.string.no_devices_found),
+		CONNECTED, PAIRING
+	}
 
 }
