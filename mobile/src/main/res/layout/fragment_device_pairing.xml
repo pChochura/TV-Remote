@@ -12,7 +12,7 @@
 	<androidx.appcompat.widget.LinearLayoutCompat
 		android:id="@+id/logoContainer"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_height="32dp"
 		android:gravity="center_vertical"
 		android:orientation="horizontal"
 		app:layout_constraintLeft_toLeftOf="parent"

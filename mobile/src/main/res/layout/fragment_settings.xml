@@ -1,355 +1,397 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="@color/background"
-	android:clipChildren="false"
-	android:clipToPadding="false"
-	android:padding="25dp">
+	android:background="@color/background">
 
-	<androidx.appcompat.widget.LinearLayoutCompat
-		android:id="@+id/logoContainer"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:gravity="center_vertical"
-		android:orientation="horizontal"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintTop_toTopOf="parent">
-
-		<androidx.appcompat.widget.AppCompatImageView
-			android:layout_width="24dp"
-			android:layout_height="24dp"
-			android:src="@drawable/ic_icon"
-			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
-
-		<androidx.appcompat.widget.AppCompatTextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_vertical"
-			android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp"
-			android:text="@string/app_name"
-			android:textSize="14sp" />
-
-	</androidx.appcompat.widget.LinearLayoutCompat>
-
-	<androidx.appcompat.widget.AppCompatTextView
-		android:id="@+id/textTitle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="50dp"
-		android:fontFamily="@font/montserrat_bold"
-		android:text="@string/settings"
-		android:textSize="36sp"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/logoContainer" />
-
-	<androidx.appcompat.widget.AppCompatTextView
-		android:id="@+id/textSubtitle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/settings_subtitle"
-		android:textColor="@color/textSecondary"
-		android:textSize="14sp"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textTitle" />
-
-	<androidx.appcompat.widget.LinearLayoutCompat
+	<com.google.android.material.appbar.AppBarLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="25dp"
-		android:clipChildren="false"
-		android:clipToPadding="false"
-		android:orientation="vertical"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textSubtitle">
+		android:background="@color/background">
 
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:id="@+id/containerTurnOnTv"
+		<com.google.android.material.appbar.CollapsingToolbarLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="?selectableItemBackground"
-			android:clickable="true"
-			android:focusable="true">
+			android:fitsSystemWindows="true"
+			app:collapsedTitleTextAppearance="@style/AppTheme.TitleSmall"
+			app:contentScrim="@color/background"
+			app:expandedTitleMarginBottom="90sp"
+			app:expandedTitleMarginStart="25dp"
+			app:expandedTitleTextAppearance="@style/AppTheme.TitleBig"
+			app:layout_scrollFlags="exitUntilCollapsed|scroll"
+			app:statusBarScrim="@color/background"
+			app:title="@string/settings"
+			app:titleEnabled="true">
 
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/titleTurnOnTv"
-				android:layout_width="0dp"
+			<androidx.appcompat.widget.Toolbar
+				android:layout_width="match_parent"
+				android:layout_height="?attr/actionBarSize"
+				android:background="@color/background"
+				android:padding="0dp"
+				app:contentInsetStart="25dp"
+				app:layout_collapseMode="pin" />
+
+			<androidx.appcompat.widget.LinearLayoutCompat
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/turn_on_tv"
-				android:textColor="@color/textPrimary"
-				android:textSize="18sp"
-				app:layout_constraintBottom_toTopOf="@id/subtitleTurnOnTv"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleTurnOnTv"
-				app:layout_constraintTop_toTopOf="parent" />
+				android:layout_marginTop="70dp"
+				android:orientation="vertical"
+				android:paddingHorizontal="25dp"
+				android:paddingVertical="20dp"
+				app:layout_collapseMode="parallax"
+				app:layout_collapseParallaxMultiplier="1">
 
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/subtitleTurnOnTv"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/turn_on_tv_subtitle"
-				android:textColor="@color/textSecondary"
-				android:textSize="12sp"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleTurnOnTv"
-				app:layout_constraintTop_toBottomOf="@id/titleTurnOnTv" />
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/textSubtitle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/settings_subtitle"
+					android:textColor="@color/textSecondary"
+					android:textSize="18sp"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/textTitle" />
 
-			<androidx.appcompat.widget.SwitchCompat
-				android:id="@+id/toggleTurnOnTv"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:checked="true"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toTopOf="parent" />
+			</androidx.appcompat.widget.LinearLayoutCompat>
 
-		</androidx.constraintlayout.widget.ConstraintLayout>
+		</com.google.android.material.appbar.CollapsingToolbarLayout>
 
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:id="@+id/containerCloseApplication"
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+		<androidx.appcompat.widget.LinearLayoutCompat
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="10dp"
-			android:background="?selectableItemBackground"
-			android:clickable="true"
-			android:focusable="true">
+			android:clipChildren="false"
+			android:clipToPadding="false"
+			android:orientation="vertical"
+			android:padding="25dp">
 
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/titleCloseApplication"
-				android:layout_width="0dp"
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/containerTurnOnTv"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/close_the_application"
-				android:textColor="@color/textPrimary"
-				android:textSize="18sp"
-				app:layout_constraintBottom_toTopOf="@id/subtitleCloseApplication"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleCloseApplication"
-				app:layout_constraintTop_toTopOf="parent" />
-
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/subtitleCloseApplication"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/close_the_application_subtitle"
-				android:textColor="@color/textSecondary"
-				android:textSize="12sp"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleCloseApplication"
-				app:layout_constraintTop_toBottomOf="@id/titleCloseApplication" />
-
-			<androidx.appcompat.widget.SwitchCompat
-				android:id="@+id/toggleCloseApplication"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:checked="true"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toTopOf="parent" />
-
-		</androidx.constraintlayout.widget.ConstraintLayout>
-
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:id="@+id/containerShowDpad"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="10dp"
-			android:background="?selectableItemBackground"
-			android:clickable="true"
-			android:focusable="true">
-
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/titleShowDpad"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/show_dpad"
-				android:textColor="@color/textPrimary"
-				android:textSize="18sp"
-				app:layout_constraintBottom_toTopOf="@id/subtitleShowDpad"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleShowDpad"
-				app:layout_constraintTop_toTopOf="parent" />
-
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/subtitleShowDpad"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/show_dpad_subtitle"
-				android:textColor="@color/textSecondary"
-				android:textSize="12sp"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleShowDpad"
-				app:layout_constraintTop_toBottomOf="@id/titleShowDpad" />
-
-			<androidx.appcompat.widget.SwitchCompat
-				android:id="@+id/toggleShowDpad"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toTopOf="parent" />
-
-		</androidx.constraintlayout.widget.ConstraintLayout>
-
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:id="@+id/containerShowOnLockScreen"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="10dp"
-			android:background="?selectableItemBackground"
-			android:clickable="true"
-			android:focusable="true">
-
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/titleShowOnLockScreen"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/show_on_lock_screen"
-				android:textColor="@color/textPrimary"
-				android:textSize="18sp"
-				app:layout_constraintBottom_toTopOf="@id/subtitleShowOnLockScreen"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleShowOnLockScreen"
-				app:layout_constraintTop_toTopOf="parent" />
-
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/subtitleShowOnLockScreen"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/show_on_lock_screen_subtitle"
-				android:textColor="@color/textSecondary"
-				android:textSize="12sp"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleShowOnLockScreen"
-				app:layout_constraintTop_toBottomOf="@id/titleShowOnLockScreen" />
-
-			<androidx.appcompat.widget.SwitchCompat
-				android:id="@+id/toggleShowOnLockScreen"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:checked="true"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toTopOf="parent" />
-
-		</androidx.constraintlayout.widget.ConstraintLayout>
-
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:id="@+id/containerOpenLastConnection"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="10dp"
-			android:background="?selectableItemBackground"
-			android:clickable="true"
-			android:focusable="true">
-
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/titleOpenLastConnection"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/open_last_connection"
-				android:textColor="@color/textPrimary"
-				android:textSize="18sp"
-				app:layout_constraintBottom_toTopOf="@id/subtitleOpenLastConnection"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleOpenLastConnection"
-				app:layout_constraintTop_toTopOf="parent" />
-
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/subtitleOpenLastConnection"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:text="@string/open_last_connection_subtitle"
-				android:textColor="@color/textSecondary"
-				android:textSize="12sp"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@id/toggleOpenLastConnection"
-				app:layout_constraintTop_toBottomOf="@id/titleOpenLastConnection" />
-
-			<androidx.appcompat.widget.SwitchCompat
-				android:id="@+id/toggleOpenLastConnection"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:checked="true"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toTopOf="parent" />
-
-		</androidx.constraintlayout.widget.ConstraintLayout>
-
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="10dp"
-			android:clipChildren="false">
-
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/titleShortcuts"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:text="@string/shortcuts"
-				android:textColor="@color/textPrimary"
-				android:textSize="18sp"
-				app:layout_constraintBottom_toTopOf="@id/subtitleShortcuts"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toTopOf="parent" />
-
-			<androidx.appcompat.widget.AppCompatTextView
-				android:id="@+id/subtitleShortcuts"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:text="@string/shortcuts_subtitle"
-				android:textColor="@color/textSecondary"
-				android:textSize="12sp"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/titleShortcuts" />
-
-			<androidx.appcompat.widget.AppCompatImageView
-				android:id="@+id/buttonAddShortcut"
-				android:layout_width="0dp"
-				android:layout_height="0dp"
-				android:background="?selectableItemBackgroundBorderless"
+				android:background="?selectableItemBackground"
 				android:clickable="true"
-				android:focusable="true"
-				android:src="@drawable/ic_add"
-				app:layout_constraintBottom_toBottomOf="@id/subtitleShortcuts"
-				app:layout_constraintDimensionRatio="1:1"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toTopOf="@id/titleShortcuts" />
+				android:focusable="true">
 
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/listShortcuts"
-				android:layout_width="wrap_content"
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/titleTurnOnTv"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/turn_on_tv"
+					android:textColor="@color/textPrimary"
+					android:textSize="18sp"
+					app:layout_constraintBottom_toTopOf="@id/subtitleTurnOnTv"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleTurnOnTv"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/subtitleTurnOnTv"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/turn_on_tv_subtitle"
+					android:textColor="@color/textSecondary"
+					android:textSize="12sp"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleTurnOnTv"
+					app:layout_constraintTop_toBottomOf="@id/titleTurnOnTv" />
+
+				<androidx.appcompat.widget.SwitchCompat
+					android:id="@+id/toggleTurnOnTv"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:checked="true"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/containerCloseApplication"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="10dp"
-				android:clipToPadding="false"
-				android:orientation="horizontal"
-				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-				app:layout_constraintHorizontal_bias="0"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/subtitleShortcuts"
-				tools:listitem="@layout/item_application_toggleable" />
+				android:background="?selectableItemBackground"
+				android:clickable="true"
+				android:focusable="true">
 
-		</androidx.constraintlayout.widget.ConstraintLayout>
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/titleCloseApplication"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/close_the_application"
+					android:textColor="@color/textPrimary"
+					android:textSize="18sp"
+					app:layout_constraintBottom_toTopOf="@id/subtitleCloseApplication"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleCloseApplication"
+					app:layout_constraintTop_toTopOf="parent" />
 
-	</androidx.appcompat.widget.LinearLayoutCompat>
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/subtitleCloseApplication"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/close_the_application_subtitle"
+					android:textColor="@color/textSecondary"
+					android:textSize="12sp"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleCloseApplication"
+					app:layout_constraintTop_toBottomOf="@id/titleCloseApplication" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+				<androidx.appcompat.widget.SwitchCompat
+					android:id="@+id/toggleCloseApplication"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:checked="true"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/containerShowDpad"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:background="?selectableItemBackground"
+				android:clickable="true"
+				android:focusable="true">
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/titleShowDpad"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/show_dpad"
+					android:textColor="@color/textPrimary"
+					android:textSize="18sp"
+					app:layout_constraintBottom_toTopOf="@id/subtitleShowDpad"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleShowDpad"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/subtitleShowDpad"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/show_dpad_subtitle"
+					android:textColor="@color/textSecondary"
+					android:textSize="12sp"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleShowDpad"
+					app:layout_constraintTop_toBottomOf="@id/titleShowDpad" />
+
+				<androidx.appcompat.widget.SwitchCompat
+					android:id="@+id/toggleShowDpad"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/containerShowOnLockScreen"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:background="?selectableItemBackground"
+				android:clickable="true"
+				android:focusable="true">
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/titleShowOnLockScreen"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/show_on_lock_screen"
+					android:textColor="@color/textPrimary"
+					android:textSize="18sp"
+					app:layout_constraintBottom_toTopOf="@id/subtitleShowOnLockScreen"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleShowOnLockScreen"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/subtitleShowOnLockScreen"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/show_on_lock_screen_subtitle"
+					android:textColor="@color/textSecondary"
+					android:textSize="12sp"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleShowOnLockScreen"
+					app:layout_constraintTop_toBottomOf="@id/titleShowOnLockScreen" />
+
+				<androidx.appcompat.widget.SwitchCompat
+					android:id="@+id/toggleShowOnLockScreen"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:checked="true"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/containerOpenLastConnection"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:background="?selectableItemBackground"
+				android:clickable="true"
+				android:focusable="true">
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/titleOpenLastConnection"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/open_last_connection"
+					android:textColor="@color/textPrimary"
+					android:textSize="18sp"
+					app:layout_constraintBottom_toTopOf="@id/subtitleOpenLastConnection"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleOpenLastConnection"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/subtitleOpenLastConnection"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/open_last_connection_subtitle"
+					android:textColor="@color/textSecondary"
+					android:textSize="12sp"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleOpenLastConnection"
+					app:layout_constraintTop_toBottomOf="@id/titleOpenLastConnection" />
+
+				<androidx.appcompat.widget.SwitchCompat
+					android:id="@+id/toggleOpenLastConnection"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:checked="true"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/containerVibrationEnabled"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:background="?selectableItemBackground"
+				android:clickable="true"
+				android:focusable="true">
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/titleVibrationEnabled"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/vibration_enabled"
+					android:textColor="@color/textPrimary"
+					android:textSize="18sp"
+					app:layout_constraintBottom_toTopOf="@id/subtitleVibrationEnabled"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleVibrationEnabled"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/subtitleVibrationEnabled"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:text="@string/vibration_enabled_subtitle"
+					android:textColor="@color/textSecondary"
+					android:textSize="12sp"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toLeftOf="@id/toggleVibrationEnabled"
+					app:layout_constraintTop_toBottomOf="@id/titleVibrationEnabled" />
+
+				<androidx.appcompat.widget.SwitchCompat
+					android:id="@+id/toggleVibrationEnabled"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:checked="true"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/containerShortcuts"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:background="?selectableItemBackground"
+				android:clickable="true"
+				android:clipChildren="false"
+				android:focusable="true">
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/titleShortcuts"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:text="@string/shortcuts"
+					android:textColor="@color/textPrimary"
+					android:textSize="18sp"
+					app:layout_constraintBottom_toTopOf="@id/subtitleShortcuts"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<androidx.appcompat.widget.AppCompatTextView
+					android:id="@+id/subtitleShortcuts"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:text="@string/shortcuts_subtitle"
+					android:textColor="@color/textSecondary"
+					android:textSize="12sp"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/titleShortcuts" />
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/listShortcuts"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="10dp"
+					android:clipToPadding="false"
+					android:orientation="horizontal"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+					app:layout_constraintHorizontal_bias="0"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/subtitleShortcuts"
+					tools:listitem="@layout/item_application_toggleable" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</androidx.appcompat.widget.LinearLayoutCompat>
+
+	</androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

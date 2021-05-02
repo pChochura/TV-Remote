@@ -3,15 +3,25 @@ package com.pointlessapps.tvremote_client.utils
 import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 
 object Utils {
+
+	fun vibrate(context: Context) {
+		context.getSystemService(Vibrator::class.java)
+			.vibrate(
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+					VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK)
+				} else {
+					VibrationEffect.createOneShot(50, 50)
+				}
+			)
+	}
 
 	fun showKeyboard(context: Context, view: View) {
 		view.post { view.requestFocus() }
@@ -34,7 +44,7 @@ object Utils {
 
 	@Suppress("DEPRECATION")
 	fun toggleShowOnLockScreen(activity: Activity, enabled: Boolean) {
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
 			activity.setShowWhenLocked(enabled)
 		} else {
 			if (enabled) {

@@ -18,8 +18,14 @@ class FragmentDeviceDiscovery :
 	private val viewModel by viewModels<ViewModelDeviceDiscovery>()
 
 	override fun created() {
-		root.buttonRetry.setOnClickListener { viewModel.startDiscovery() }
-		root.buttonSettings.setOnClickListener { findNavController().navigate(R.id.action_deviceDiscovery_to_settings) }
+		root.buttonRetry.setOnClickListener {
+			viewModel.cancelConnecting()
+			viewModel.clearSavedDevice()
+			viewModel.startDiscovery()
+		}
+		root.buttonSettings.setOnClickListener {
+			findNavController().navigate(R.id.actionDiscoveryToSettings)
+		}
 
 		refreshed()
 	}
@@ -29,12 +35,12 @@ class FragmentDeviceDiscovery :
 			when (state) {
 				ViewModelDeviceDiscovery.State.PAIRING -> {
 					if (findNavController().currentDestination?.id == R.id.deviceDiscovery) {
-						findNavController().navigate(R.id.action_deviceDiscovery_to_devicePairing)
+						findNavController().navigate(R.id.actionDiscoveryToPairing)
 					}
 				}
 				ViewModelDeviceDiscovery.State.CONNECTED -> {
 					if (findNavController().currentDestination?.id == R.id.deviceDiscovery) {
-						findNavController().navigate(R.id.action_deviceDiscovery_to_remote)
+						findNavController().navigate(R.id.actionDiscoveryToRemote)
 					}
 				}
 				else -> {

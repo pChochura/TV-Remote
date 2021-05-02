@@ -22,12 +22,10 @@ class TvRemoteQTService : TileService() {
 
 	private var cachedPreferencesService: PreferencesService? = null
 
-	private fun getPreferenceService() =
-		(application as? App)?.preferencesService ?: (
-				cachedPreferencesService
-					?: PreferencesService(coroutineScope, applicationContext)
-						.also { cachedPreferencesService = it }
-				)
+	private fun getPreferenceService() = (application as? App)?.preferencesService ?: (
+			cachedPreferencesService ?: PreferencesService(coroutineScope, applicationContext)
+				.also { cachedPreferencesService = it }
+			)
 
 	override fun onCreate() {
 		NetworkUtils.registerNetworkChangeListener(applicationContext) { available ->
@@ -77,11 +75,11 @@ class TvRemoteQTService : TileService() {
 	private fun refreshState() {
 		coroutineScope.launch {
 			if (!loadDevice()) {
-				setState(getString(R.string.unknown), Tile.STATE_UNAVAILABLE)
+				setState(getString(R.string.no_device), Tile.STATE_UNAVAILABLE)
 				return@launch
 			}
 
-			GlobalScope.launch(Dispatchers.IO) {
+			with(Dispatchers.IO) {
 				runCatching {
 					setState(getString(R.string.loading), Tile.STATE_UNAVAILABLE)
 					requests.add("/power".httpGet().string(this@TvRemoteQTService::setState))
@@ -108,10 +106,10 @@ class TvRemoteQTService : TileService() {
 
 	private fun setState(label: String, state: Int? = null) {
 		runCatching {
-			qsTile.also {
-				it?.label = label
-				state?.apply { it?.state = this }
-				it?.updateTile()
+			qsTile?.also {
+				it.label = label
+				state?.apply { it.state = this }
+				it.updateTile()
 			}
 		}
 	}

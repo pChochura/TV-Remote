@@ -18,4 +18,16 @@
 		<item name="android:windowTranslucentNavigation">false</item>
 	</style>
 
+	<style name="AppTheme.TitleBig" parent="AppTheme">
+		<item name="android:textSize">36sp</item>
+		<item name="android:fontFamily">@font/montserrat_bold</item>
+		<item name="android:textColor">@color/textPrimary</item>
+	</style>
+
+	<style name="AppTheme.TitleSmall" parent="AppTheme">
+		<item name="android:textSize">18sp</item>
+		<item name="android:fontFamily">@font/montserrat_bold</item>
+		<item name="android:textColor">@color/textPrimary</item>
+	</style>
+
 </resources>

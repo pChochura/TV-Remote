@@ -15,7 +15,9 @@ import com.pointlessapps.tvremote_client.App
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
 import com.pointlessapps.tvremote_client.services.TvRemoteQTService
 import com.pointlessapps.tvremote_client.tv.TvRemote
+import com.pointlessapps.tvremote_client.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -51,6 +53,15 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 		}
 		deviceWrapper.setOnStartVoiceListener { _isVoiceRecording.value = true }
 		deviceWrapper.setOnStopVoiceListener { _isVoiceRecording.value = false }
+
+		viewModelScope.launch {
+			while (true) {
+				delay(500)
+				if (deviceWrapper.device?.isConnected == true) {
+					_isLoading.postValue(false)
+				}
+			}
+		}
 	}
 
 	fun setDeviceInfo(deviceInfo: DeviceInfo?) {
@@ -62,19 +73,22 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 	}
 
 	fun reconnect() {
-		deviceWrapper.device = Device.from(
-			getApplication(),
-			deviceWrapper.device!!.deviceInfo,
-			deviceWrapper.deviceListener,
-			Handler(Looper.getMainLooper())
-		)
+		if (deviceWrapper.device?.isConnected != true) {
+			deviceWrapper.device?.disconnect()
+			deviceWrapper.device = Device.from(
+				getApplication(),
+				deviceWrapper.device!!.deviceInfo,
+				deviceWrapper.deviceListener,
+				Handler(Looper.getMainLooper())
+			)
+		}
 	}
 
 	fun disconnect() {
 		deviceWrapper.device?.disconnect()
 	}
 
-	fun setOnShowImeListener(listener: (EditorInfo, ExtractedText?) -> Unit) {
+	fun setOnShowImeListener(listener: (EditorInfo?, ExtractedText?) -> Unit) {
 		deviceWrapper.setOnShowImeListener { _, info, text -> listener(info, text) }
 	}
 
@@ -139,5 +153,16 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 
 	fun openApp(packageName: String, activityName: String) {
 		viewModelScope.launch(Dispatchers.Default) { remote.openApp(packageName, activityName) }
+	}
+
+	fun vibrateIfEnabled() {
+		viewModelScope.launch {
+			val settings = getSettings()
+			if (!settings.vibrationEnabled || deviceWrapper.device?.isConnected != true) {
+				return@launch
+			}
+
+			Utils.vibrate(getApplication())
+		}
 	}
 }

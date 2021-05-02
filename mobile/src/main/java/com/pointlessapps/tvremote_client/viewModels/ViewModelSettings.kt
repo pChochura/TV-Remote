@@ -56,10 +56,37 @@ class ViewModelSettings(application: Application) : AndroidViewModel(application
 		}
 	}
 
+	fun setVibrationEnabled(vibrationEnabled: Boolean) {
+		viewModelScope.launch {
+			preferencesService.setSettings(settings.value?.also {
+				it.vibrationEnabled = vibrationEnabled
+			} ?: return@launch)
+		}
+	}
+
 	fun addShortcut(shortcut: com.pointlessapps.tvremote_client.models.Application) {
 		viewModelScope.launch {
 			preferencesService.setSettings(settings.value?.also {
 				it.shortcuts = listOf(*it.shortcuts.toTypedArray(), shortcut)
+			} ?: return@launch)
+		}
+	}
+
+	fun updateShortcut(shortcut: com.pointlessapps.tvremote_client.models.Application) {
+		viewModelScope.launch {
+			preferencesService.setSettings(settings.value?.also { settings ->
+				settings.shortcuts = listOf(
+					*settings.shortcuts.filter { it.id != shortcut.id }.toTypedArray(),
+					shortcut
+				)
+			} ?: return@launch)
+		}
+	}
+
+	fun removeShortcut(shortcut: com.pointlessapps.tvremote_client.models.Application) {
+		viewModelScope.launch {
+			preferencesService.setSettings(settings.value?.also { settings ->
+				settings.shortcuts = settings.shortcuts.filter { it.id != shortcut.id }
 			} ?: return@launch)
 		}
 	}

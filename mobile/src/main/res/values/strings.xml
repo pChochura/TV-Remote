@@ -31,7 +31,8 @@
 	<string name="close_the_application">Close the application</string>
 	<string name="close_the_application_subtitle">Turning off your TV causes the application to close</string>
 	<string name="shortcuts">Shortcuts</string>
-	<string name="shortcuts_subtitle">Toggle visibility of the shortcuts</string>
+	<string name="shortcuts_subtitle">Toggle visibility of the shortcuts and rearrange them</string>
+	<string name="shortcuts_subtitle_2">Tap to edit or remove application shortcuts</string>
 	<string name="show_dpad">Show DPad</string>
 	<string name="show_dpad_subtitle">Use DPad instead of gesture navigation</string>
 	<string name="your_text_goes_here">Your text goes here</string>
@@ -43,9 +44,17 @@
 	<string name="show_on_lock_screen_subtitle">Show the remote over the lock screen if the connection is established</string>
 	<string name="add">Add</string>
 	<string name="package_name">Package name</string>
-	<string name="your_app_name">Your app name</string>
+	<string name="your_app_name">App name</string>
 	<string name="add_custom_shortcut">Add a custom shortcut</string>
 	<string name="open_last_connection">Open last connection</string>
 	<string name="open_last_connection_subtitle">Open the remote immediately when there is a saved connection</string>
 	<string name="device_discovery">Device discovery</string>
+	<string name="no_device">No device</string>
+	<string name="vibration_enabled">Vibration enabled</string>
+	<string name="vibration_enabled_subtitle">Causes the phone to vibrate after each action on the remote</string>
+	<string name="add_shortcut">Add shortcut</string>
+	<string name="example">Example</string>
+	<string name="com_package_example">com.package.example</string>
+	<string name="save">Save</string>
+	<string name="delete">Delete</string>
 </resources>

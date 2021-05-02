@@ -12,21 +12,21 @@
 		android:label="@string/device_discovery"
 		tools:layout="@layout/fragment_device_discovery">
 		<action
-			android:id="@+id/action_deviceDiscovery_to_settings"
+			android:id="@+id/actionDiscoveryToSettings"
 			app:destination="@id/settings"
 			app:enterAnim="@anim/fade_in"
 			app:exitAnim="@anim/fade_out"
 			app:popEnterAnim="@anim/fade_in"
 			app:popExitAnim="@anim/fade_out" />
 		<action
-			android:id="@+id/action_deviceDiscovery_to_devicePairing"
+			android:id="@+id/actionDiscoveryToPairing"
 			app:destination="@id/devicePairing"
 			app:enterAnim="@anim/fade_in"
 			app:exitAnim="@anim/fade_out"
 			app:popEnterAnim="@anim/fade_in"
 			app:popExitAnim="@anim/fade_out" />
 		<action
-			android:id="@+id/action_deviceDiscovery_to_remote"
+			android:id="@+id/actionDiscoveryToRemote"
 			app:destination="@id/remote"
 			app:enterAnim="@anim/fade_in"
 			app:exitAnim="@anim/fade_out"
@@ -40,7 +40,7 @@
 		android:label="@string/device_discovery"
 		tools:layout="@layout/fragment_device_pairing">
 		<action
-			android:id="@+id/action_devicePairing_to_remote"
+			android:id="@+id/actionPairingToRemote"
 			app:destination="@id/remote"
 			app:enterAnim="@anim/fade_in"
 			app:exitAnim="@anim/fade_out"
@@ -52,7 +52,15 @@
 		android:id="@+id/settings"
 		android:name="com.pointlessapps.tvremote_client.fragments.FragmentSettings"
 		android:label="@string/device_discovery"
-		tools:layout="@layout/fragment_settings" />
+		tools:layout="@layout/fragment_settings">
+		<action
+			android:id="@+id/actionSettingsToShortcuts"
+			app:destination="@id/fragmentShortcuts"
+			app:enterAnim="@anim/fade_in"
+			app:exitAnim="@anim/fade_out"
+			app:popEnterAnim="@anim/fade_in"
+			app:popExitAnim="@anim/fade_out" />
+	</fragment>
 
 	<fragment
 		android:id="@+id/remote"
@@ -60,13 +68,28 @@
 		android:label="@string/device_discovery"
 		tools:layout="@layout/fragment_remote">
 		<action
-			android:id="@+id/action_remote_to_deviceDiscovery"
+			android:id="@+id/actionRemoteToDiscovery"
 			app:destination="@id/deviceDiscovery"
 			app:enterAnim="@anim/fade_in"
 			app:exitAnim="@anim/fade_out"
 			app:popEnterAnim="@anim/fade_in"
 			app:popExitAnim="@anim/fade_out"
 			app:popUpTo="@id/remote"
+			app:popUpToInclusive="true" />
+	</fragment>
+	<fragment
+		android:id="@+id/fragmentShortcuts"
+		android:name="com.pointlessapps.tvremote_client.fragments.FragmentShortcuts"
+		android:label="FragmentShortcuts"
+		tools:layout="@layout/fragment_shortcuts">
+		<action
+			android:id="@+id/actionShortcutsToSettings"
+			app:destination="@id/settings"
+			app:enterAnim="@anim/fade_in"
+			app:exitAnim="@anim/fade_out"
+			app:popEnterAnim="@anim/fade_in"
+			app:popExitAnim="@anim/fade_out"
+			app:popUpTo="@id/settings"
 			app:popUpToInclusive="true" />
 	</fragment>
 

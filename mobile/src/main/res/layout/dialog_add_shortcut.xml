@@ -1,29 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:background="@color/background"
-	android:orientation="vertical"
 	android:minWidth="350dp"
-	android:padding="20dp">
+	android:orientation="vertical"
+	android:paddingHorizontal="20dp"
+	android:paddingVertical="30dp">
+
+	<com.google.android.material.card.MaterialCardView
+		android:layout_width="150dp"
+		android:layout_height="100dp"
+		android:layout_gravity="center"
+		android:layout_marginBottom="30dp"
+		app:cardCornerRadius="5dp"
+		app:cardElevation="2dp"
+		app:cardUseCompatPadding="true">
+
+		<androidx.appcompat.widget.AppCompatImageView
+			android:id="@+id/imageApplication"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:scaleType="centerCrop"
+			tools:src="@mipmap/app_cda" />
+
+	</com.google.android.material.card.MaterialCardView>
 
 	<androidx.appcompat.widget.AppCompatTextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/your_app_name" />
 
-	<androidx.appcompat.widget.AppCompatEditText
-		android:id="@+id/editAppName"
+	<com.google.android.material.textfield.TextInputLayout
+		style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="10dp"
-		android:background="@drawable/rounded_borders"
-		android:backgroundTint="@color/textSecondary"
-		android:hint="Youtube"
-		android:inputType="textShortMessage|textAutoCorrect|textAutoComplete|textCapWords"
-		android:padding="10dp"
-		android:textSize="14sp" />
+		app:boxStrokeColor="@color/textSecondary"
+		app:hintEnabled="false">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/editAppName"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/example"
+			android:inputType="textShortMessage|textAutoCorrect|textAutoComplete|textCapWords"
+			android:padding="10dp"
+			android:textColorHint="@color/textSecondary"
+			android:textCursorDrawable="@null"
+			android:textSize="14sp" />
+
+	</com.google.android.material.textfield.TextInputLayout>
 
 	<androidx.appcompat.widget.AppCompatTextView
 		android:layout_width="wrap_content"
@@ -31,30 +61,59 @@
 		android:layout_marginTop="20dp"
 		android:text="@string/package_name" />
 
-	<androidx.appcompat.widget.AppCompatEditText
-		android:id="@+id/editPackageName"
+	<com.google.android.material.textfield.TextInputLayout
+		style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="10dp"
-		android:background="@drawable/rounded_borders"
-		android:backgroundTint="@color/textSecondary"
-		android:hint="com.package.name.app"
-		android:inputType="textShortMessage|textNoSuggestions"
-		android:padding="10dp"
-		android:textSize="14sp" />
+		app:boxStrokeColor="@color/textSecondary"
+		app:hintEnabled="false">
 
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/buttonAdd"
-		style="@style/Widget.MaterialComponents.Button.TextButton"
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/editPackageName"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/com_package_example"
+			android:inputType="text|textNoSuggestions"
+			android:padding="10dp"
+			android:textColorHint="@color/textSecondary"
+			android:textCursorDrawable="@null"
+			android:textSize="14sp" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<androidx.appcompat.widget.LinearLayoutCompat
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="end"
-		android:layout_marginTop="20dp"
-		android:fontFamily="@font/montserrat_bold"
-		android:insetTop="0dp"
-		android:insetBottom="0dp"
-		android:minHeight="0dp"
-		android:text="@string/add"
-		android:textColor="@color/textPrimary" />
+		android:layout_marginTop="20dp">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/buttonDelete"
+			style="@style/Widget.MaterialComponents.Button.TextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:fontFamily="@font/montserrat_bold"
+			android:insetTop="0dp"
+			android:insetBottom="0dp"
+			android:minHeight="0dp"
+			android:text="@string/delete"
+			android:textColor="@color/textSecondary" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/buttonSave"
+			style="@style/Widget.MaterialComponents.Button.TextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			android:fontFamily="@font/montserrat_bold"
+			android:insetTop="0dp"
+			android:insetBottom="0dp"
+			android:minHeight="0dp"
+			android:text="@string/save"
+			android:textColor="@color/textPrimary" />
+
+	</androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

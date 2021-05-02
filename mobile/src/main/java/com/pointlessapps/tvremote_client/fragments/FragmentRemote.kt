@@ -13,13 +13,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pointlessapps.tvremote_client.R
-import com.pointlessapps.tvremote_client.adapters.AdapterApplication
+import com.pointlessapps.tvremote_client.adapters.AdapterApplicationList
 import com.pointlessapps.tvremote_client.databinding.FragmentRemoteBinding
 import com.pointlessapps.tvremote_client.utils.SwipeTouchHandler
 import com.pointlessapps.tvremote_client.utils.Utils
@@ -28,7 +29,7 @@ import com.pointlessapps.tvremote_client.viewModels.ViewModelRemote
 
 class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding::inflate) {
 
-	private val viewModel by viewModels<ViewModelRemote>()
+	private val viewModel by activityViewModels<ViewModelRemote>()
 
 	private val permissionLauncher =
 		registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
@@ -103,29 +104,37 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 
 	@SuppressLint("ClickableViewAccessibility")
 	private fun setClickListeners() {
-		root.buttonPower.setOnClickListener { viewModel.powerOff { requireActivity().finish() } }
+		root.buttonPower.setOnClickListener {
+			viewModel.vibrateIfEnabled()
+			viewModel.powerOff { requireActivity().finish() }
+		}
 		root.buttonPower.setOnLongClickListener {
+			viewModel.vibrateIfEnabled()
 			viewModel.sendLongClick(KeyEvent.KEYCODE_POWER)
 			true
 		}
 		root.buttonHome.setOnTouchListener { _, event ->
+			viewModel.vibrateIfEnabled()
 			viewModel.sendKeyEvent(KeyEvent.KEYCODE_HOME, event.action)
 			true
 		}
 		root.buttonSource.setOnClickListener {
+			viewModel.vibrateIfEnabled()
 			viewModel.sendClick(KeyEvent.KEYCODE_TV_INPUT)
 			viewModel.sendIntent(Intent("com.android.tv.action.VIEW_INPUTS").apply {
 				setClassName("com.tcl.sourcemananger", "com.tcl.sourcemanager.MainActivity")
 			})
 		}
 		root.buttonSource.setOnLongClickListener {
+			viewModel.vibrateIfEnabled()
 			viewModel.sendClick(KeyEvent.KEYCODE_SETTINGS)
 			true
 		}
 		root.buttonClose.setOnClickListener {
+			viewModel.vibrateIfEnabled()
 			viewModel.disconnect()
 			viewModel.setDeviceInfo(null)
-			findNavController().navigate(R.id.action_remote_to_deviceDiscovery)
+			findNavController().navigate(R.id.actionRemoteToDiscovery)
 		}
 
 		onDispatchKeyEvent = { event ->
@@ -136,6 +145,7 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 					KeyEvent.KEYCODE_BACK
 				)
 			}?.let {
+				viewModel.vibrateIfEnabled()
 				viewModel.sendKeyEvent(it.keyCode, it.action)
 				true
 			} ?: false
@@ -148,15 +158,31 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 		root.containerDpad.isVisible = false
 		root.containerTouchHandler.setOnTouchListener(SwipeTouchHandler {
 			when (it) {
-				SwipeTouchHandler.ACTION.LONG_CLICK -> viewModel.sendLongClick(KeyEvent.KEYCODE_DPAD_CENTER)
+				SwipeTouchHandler.ACTION.LONG_CLICK -> {
+					viewModel.vibrateIfEnabled()
+					viewModel.sendLongClick(KeyEvent.KEYCODE_DPAD_CENTER)
+				}
 				SwipeTouchHandler.ACTION.CLICK -> {
+					viewModel.vibrateIfEnabled()
 					viewModel.sendClick(KeyEvent.KEYCODE_DPAD_CENTER)
 					viewModel.beginBatchEdit()
 				}
-				SwipeTouchHandler.ACTION.SWIPE_LEFT -> viewModel.sendClick(KeyEvent.KEYCODE_DPAD_LEFT)
-				SwipeTouchHandler.ACTION.SWIPE_RIGHT -> viewModel.sendClick(KeyEvent.KEYCODE_DPAD_RIGHT)
-				SwipeTouchHandler.ACTION.SWIPE_UP -> viewModel.sendClick(KeyEvent.KEYCODE_DPAD_UP)
-				SwipeTouchHandler.ACTION.SWIPE_DOWN -> viewModel.sendClick(KeyEvent.KEYCODE_DPAD_DOWN)
+				SwipeTouchHandler.ACTION.SWIPE_LEFT -> {
+					viewModel.vibrateIfEnabled()
+					viewModel.sendClick(KeyEvent.KEYCODE_DPAD_LEFT)
+				}
+				SwipeTouchHandler.ACTION.SWIPE_RIGHT -> {
+					viewModel.vibrateIfEnabled()
+					viewModel.sendClick(KeyEvent.KEYCODE_DPAD_RIGHT)
+				}
+				SwipeTouchHandler.ACTION.SWIPE_UP -> {
+					viewModel.vibrateIfEnabled()
+					viewModel.sendClick(KeyEvent.KEYCODE_DPAD_UP)
+				}
+				SwipeTouchHandler.ACTION.SWIPE_DOWN -> {
+					viewModel.vibrateIfEnabled()
+					viewModel.sendClick(KeyEvent.KEYCODE_DPAD_DOWN)
+				}
 			}
 		})
 	}
@@ -170,9 +196,11 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 		}
 		root.editInput.removeTextChangedListener(textWatcher)
 
-		viewModel.setOnShowImeListener { info, text ->
-			info.hintText.takeIf { it.isNotEmpty() }?.let { root.editInput.hint = it }
-			root.editInput.imeOptions = info.imeOptions
+		viewModel.setOnShowImeListener { editorInfo, text ->
+			editorInfo?.also { info ->
+				info.hintText.takeIf { it.isNotEmpty() }?.let { root.editInput.hint = it }
+				root.editInput.imeOptions = info.imeOptions
+			}
 			if (root.containerKeyboardInput.isGone) {
 				root.editInput.removeTextChangedListener(textWatcher)
 				root.editInput.setText(text?.text)
@@ -207,22 +235,30 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 		root.imageGestureNavigation.isVisible = false
 		root.containerDpad.isVisible = true
 		root.buttonLeft.setOnTouchListener { _, event ->
-			true.also { viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, event.action) }
+			viewModel.vibrateIfEnabled()
+			viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, event.action)
+			true
 		}
 		root.buttonRight.setOnTouchListener { _, event ->
-			true.also { viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, event.action) }
+			viewModel.vibrateIfEnabled()
+			viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, event.action)
+			true
 		}
 		root.buttonUp.setOnTouchListener { _, event ->
-			true.also { viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_UP, event.action) }
+			viewModel.vibrateIfEnabled()
+			viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_UP, event.action)
+			true
 		}
 		root.buttonDown.setOnTouchListener { _, event ->
-			true.also { viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, event.action) }
+			viewModel.vibrateIfEnabled()
+			viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, event.action)
+			true
 		}
 		root.buttonOK.setOnTouchListener { _, event ->
-			true.also {
-				viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_CENTER, event.action)
-				viewModel.beginBatchEdit()
-			}
+			viewModel.vibrateIfEnabled()
+			viewModel.sendKeyEvent(KeyEvent.KEYCODE_DPAD_CENTER, event.action)
+			viewModel.beginBatchEdit()
+			true
 		}
 	}
 
@@ -230,8 +266,11 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 		viewModel.checkedShortcuts.observe(this) { shortcuts ->
 			root.listApplications.apply {
 				layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-				adapter = AdapterApplication(shortcuts).apply {
-					onClickListener = { viewModel.openApp(it.packageName, it.activityName) }
+				adapter = AdapterApplicationList(shortcuts).apply {
+					onClickListener = {
+						viewModel.vibrateIfEnabled()
+						viewModel.openApp(it.packageName, it.activityName)
+					}
 				}
 			}
 		}

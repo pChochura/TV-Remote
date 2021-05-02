@@ -1,23 +1,21 @@
 package com.pointlessapps.tvremote_client.fragments
 
-import android.app.Dialog
-import android.view.View
-import android.widget.EditText
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.adapters.AdapterApplicationToggleable
 import com.pointlessapps.tvremote_client.databinding.FragmentSettingsBinding
-import com.pointlessapps.tvremote_client.models.Application
 import com.pointlessapps.tvremote_client.utils.DragItemTouchHelper
 import com.pointlessapps.tvremote_client.utils.Utils
 import com.pointlessapps.tvremote_client.viewModels.ViewModelSettings
 
 class FragmentSettings : FragmentBase<FragmentSettingsBinding>(FragmentSettingsBinding::inflate) {
 
-	private val viewModel by viewModels<ViewModelSettings>()
+	private val viewModel by activityViewModels<ViewModelSettings>()
 
 	override fun created() {
 		prepareSettings()
@@ -31,6 +29,7 @@ class FragmentSettings : FragmentBase<FragmentSettingsBinding>(FragmentSettingsB
 			root.toggleShowDpad.isChecked = settings.showDpad
 			root.toggleShowOnLockScreen.isChecked = settings.showOnLockScreen
 			root.toggleOpenLastConnection.isChecked = settings.openLastConnection
+			root.toggleVibrationEnabled.isChecked = settings.vibrationEnabled
 		}
 
 		with(root.listShortcuts) {
@@ -68,6 +67,9 @@ class FragmentSettings : FragmentBase<FragmentSettingsBinding>(FragmentSettingsB
 		root.containerOpenLastConnection.setOnClickListener {
 			viewModel.setOpenLastConnection(!root.toggleOpenLastConnection.isChecked)
 		}
+		root.containerVibrationEnabled.setOnClickListener {
+			viewModel.setVibrationEnabled(!root.toggleVibrationEnabled.isChecked)
+		}
 
 		root.toggleTurnOnTv.setOnCheckedChangeListener { _, isChecked ->
 			viewModel.setTurnOnTv(isChecked)
@@ -85,17 +87,11 @@ class FragmentSettings : FragmentBase<FragmentSettingsBinding>(FragmentSettingsB
 		root.toggleOpenLastConnection.setOnCheckedChangeListener { _, isChecked ->
 			viewModel.setOpenLastConnection(isChecked)
 		}
-		root.buttonAddShortcut.setOnClickListener {
-			Dialog(requireActivity()).apply {
-				setTitle(R.string.add_custom_shortcut)
-				setContentView(R.layout.dialog_add_shortcut)
-				findViewById<View>(R.id.buttonAdd).setOnClickListener {
-					val appName = findViewById<EditText>(R.id.editAppName).text.toString()
-					val packageName = findViewById<EditText>(R.id.editPackageName).text.toString()
-					viewModel.addShortcut(Application(0, packageName, appName))
-					dismiss()
-				}
-			}.show()
+		root.toggleVibrationEnabled.setOnCheckedChangeListener { _, isChecked ->
+			viewModel.setVibrationEnabled(isChecked)
+		}
+		root.containerShortcuts.setOnClickListener {
+			findNavController().navigate(R.id.actionSettingsToShortcuts)
 		}
 	}
 }

@@ -3,10 +3,8 @@ package com.pointlessapps.tvremote_client.fragments
 import android.view.KeyEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.pointlessapps.tvremote_client.App
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.databinding.FragmentDevicePairingBinding
 import com.pointlessapps.tvremote_client.viewModels.ViewModelDevicePairing
@@ -43,7 +41,7 @@ class FragmentDevicePairing :
 
 			if (secret.length == 4) {
 				viewModel.setPairingSecret(secret)
-				findNavController().navigate(R.id.action_devicePairing_to_remote)
+				findNavController().navigate(R.id.actionPairingToRemote)
 			}
 		}
 

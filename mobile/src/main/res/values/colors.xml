@@ -8,4 +8,5 @@
     <color name="textSecondary">#929292</color>
     <color name="semiTransparent">#B3FFFFFF</color>
     <color name="semiTransparentBlack">#B3000000</color>
+    <color name="mtrl_textinput_default_box_stroke_color">@color/textSecondary</color>
 </resources>

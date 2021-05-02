@@ -35,11 +35,12 @@
 
 		<androidx.appcompat.widget.AppCompatImageView
 			android:id="@+id/buttonSettings"
-			android:layout_width="24dp"
-			android:layout_height="24dp"
+			android:layout_width="32dp"
+			android:layout_height="32dp"
 			android:background="?selectableItemBackgroundBorderless"
 			android:clickable="true"
 			android:focusable="true"
+			android:padding="4dp"
 			android:src="@drawable/ic_settings"
 			android:tint="@color/textSecondary" />
 

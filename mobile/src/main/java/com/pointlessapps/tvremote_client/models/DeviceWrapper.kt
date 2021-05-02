@@ -12,7 +12,7 @@ class DeviceWrapper(var device: Device?) {
 	internal var onConnected: ((Device) -> Unit)? = null
 	internal var onPairingRequired: ((Device) -> Unit)? = null
 	internal var onCompletionInfo: ((Device) -> Unit)? = null
-	internal var onShowIme: ((Device, EditorInfo, ExtractedText?) -> Unit)? = null
+	internal var onShowIme: ((Device, EditorInfo?, ExtractedText?) -> Unit)? = null
 	internal var onConnecting: ((Device) -> Unit)? = null
 	internal var onConnectFailed: ((Device) -> Unit)? = null
 	internal var onDisconnected: ((Device) -> Unit)? = null
@@ -24,7 +24,7 @@ class DeviceWrapper(var device: Device?) {
 	fun setOnConnectedListener(listener: (Device) -> Unit) { onConnected = listener }
 	fun setOnPairingRequiredListener(listener: (Device) -> Unit) { onPairingRequired = listener }
 	fun setOnCompletionInfoListener(listener: (Device) -> Unit) { onCompletionInfo = listener }
-	fun setOnShowImeListener(listener: (Device, EditorInfo, ExtractedText?) -> Unit) { onShowIme = listener }
+	fun setOnShowImeListener(listener: (Device, EditorInfo?, ExtractedText?) -> Unit) { onShowIme = listener }
 	fun setOnConnectingListener(listener: (Device) -> Unit) { onConnecting = listener }
 	fun setOnConnectFailedListener(listener: (Device) -> Unit) { onConnectFailed = listener }
 	fun setOnDisconnectedListener(listener: (Device) -> Unit) { onDisconnected = listener }

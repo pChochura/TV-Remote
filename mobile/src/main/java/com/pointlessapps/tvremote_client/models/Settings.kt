@@ -14,6 +14,7 @@ class Settings(
 	var showDpad: Boolean = false,
 	var showOnLockScreen: Boolean = true,
 	var openLastConnection: Boolean = true,
+	var vibrationEnabled: Boolean = true,
 	var shortcuts: List<Application> = defaultApplications
 ) {
 
@@ -39,7 +40,11 @@ class Settings(
 				"com.spotify.tv.android",
 				"com.spotify.tv.android.SpotifyTVActivity"
 			),
-			Application(R.mipmap.app_cda, "pl.cda.tv", "pl.cda.tv.ui.welcome.WelcomeActivity"),
+			Application(
+				R.mipmap.app_cda,
+				"pl.cda.tv",
+				"pl.cda.tv.ui.welcome.WelcomeActivity"
+			),
 			Application(
 				R.mipmap.app_play_store,
 				"com.android.vending",

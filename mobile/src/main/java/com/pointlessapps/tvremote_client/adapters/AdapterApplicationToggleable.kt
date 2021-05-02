@@ -25,7 +25,8 @@ class AdapterApplicationToggleable(apps: LiveData<List<Application>>) :
 				val width = root.imageApplication.width
 				val height = root.imageApplication.height
 				root.imageApplication.setImageBitmap(
-					item.getImageBitmap(
+					Application.getImageBitmap(
+						item.activityName,
 						root.root.context,
 						width,
 						height

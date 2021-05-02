@@ -39,13 +39,18 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 
 		override fun onDeviceFound(deviceInfo: DeviceInfo) {
 			viewModelScope.launch {
-				_state.postValue(State.FOUND)
-
 				val devices = _devices.value!!
-				if (getSettings().deviceInfo != null || devices.find { it.uri == deviceInfo.uri } != null) {
+				if (devices.find { it.uri == deviceInfo.uri } != null) {
+					return@launch
+				}
+				val savedDevice = getSettings().deviceInfo
+				if (savedDevice != null && deviceInfo.uri == savedDevice.uri) {
+					_state.postValue(State.LOADING)
+
 					return@launch
 				}
 
+				_state.postValue(State.FOUND)
 				_devices.postValue(listOf(*devices.toTypedArray(), deviceInfo))
 			}
 		}
@@ -62,7 +67,7 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 		}
 	}
 
-	suspend fun getSettings() = preferencesService.getSettings().first()
+	private suspend fun getSettings() = preferencesService.getSettings().first()
 
 	fun setDeviceListener() {
 		deviceWrapper.apply {
@@ -78,9 +83,7 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 		viewModelScope.launch {
 			val settings = getSettings()
 			if (!settings.openLastConnection) {
-				preferencesService.setSettings(settings.also {
-					it.deviceInfo = null
-				})
+				clearSavedDevice()
 
 				return@launch
 			}
@@ -95,7 +98,22 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 
 	fun startDiscovery() {
 		discoverer.startDiscovery(discoveryListener, handler)
-		_state.value = State.SEARCHING
+		_state.value = when {
+			_devices.value.isNullOrEmpty() -> State.SEARCHING
+			else -> State.FOUND
+		}
+	}
+
+	fun clearSavedDevice() {
+		viewModelScope.launch {
+			preferencesService.setSettings(getSettings().also {
+				it.deviceInfo = null
+			})
+		}
+	}
+
+	fun cancelConnecting() {
+		getApplication<App>().device?.disconnect()
 	}
 
 	fun loadDevice(deviceInfo: DeviceInfo) {
@@ -123,7 +141,7 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 		val textLabelVisible: Boolean = false,
 		@StringRes val label: Int? = null
 	) {
-		LOADING(false, false, true, false, true, R.string.loading),
+		LOADING(true, false, true, false, true, R.string.loading),
 		SEARCHING(false, false, true, false, true, R.string.searching),
 		FAILED(true, true, false, false, true, R.string.something_went_wrong),
 		FOUND(false, false, false, true, false),
