@@ -7,7 +7,7 @@
 	<string name="its_off">It\'s off</string>
 	<string name="unknown">Unknown</string>
 	<string name="notification_title">Tv remote</string>
-	<string name="notification_content">Use this shortcuts to control your TV</string>
+	<string name="notification_content">This notification indicates that the connection with your TV is active</string>
 	<string name="channel_id">tv_remote_channel</string>
 	<string name="channel_name">Tv remote notifications</string>
 	<string name="select_your_tv">Select your TV</string>
@@ -57,4 +57,5 @@
 	<string name="com_package_example">com.package.example</string>
 	<string name="save">Save</string>
 	<string name="delete">Delete</string>
+	<string name="disconnect">Disconnect</string>
 </resources>

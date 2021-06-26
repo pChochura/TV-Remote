@@ -10,16 +10,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.adapters.AdapterDevice
 import com.pointlessapps.tvremote_client.databinding.FragmentDeviceDiscoveryBinding
+import com.pointlessapps.tvremote_client.services.ConnectionService
+import com.pointlessapps.tvremote_client.utils.Utils
+import com.pointlessapps.tvremote_client.utils.bindService
 import com.pointlessapps.tvremote_client.viewModels.ViewModelDeviceDiscovery
 
 class FragmentDeviceDiscovery :
 	FragmentBase<FragmentDeviceDiscoveryBinding>(FragmentDeviceDiscoveryBinding::inflate) {
 
+	private lateinit var service: ConnectionService
 	private val viewModel by viewModels<ViewModelDeviceDiscovery>()
 
 	override fun created() {
+		requireActivity().bindService<ConnectionService.ConnectionBinder>(ConnectionService::class.java) {
+			service = it?.service ?: return@bindService
+			viewModel.setOnGetServiceCallback { service }
+			viewModel.setDeviceListener()
+			viewModel.loadDeviceInfo()
+		}
+
+		Utils.toggleShowOnLockScreen(requireActivity(), false)
+
 		root.buttonRetry.setOnClickListener {
-			viewModel.cancelConnecting()
+			viewModel.disconnect()
 			viewModel.clearSavedDevice()
 			viewModel.startDiscovery()
 		}

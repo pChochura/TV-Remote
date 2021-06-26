@@ -14,7 +14,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,23 +21,34 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.adapters.AdapterApplicationList
 import com.pointlessapps.tvremote_client.databinding.FragmentRemoteBinding
+import com.pointlessapps.tvremote_client.services.ConnectionService
 import com.pointlessapps.tvremote_client.utils.SwipeTouchHandler
 import com.pointlessapps.tvremote_client.utils.Utils
+import com.pointlessapps.tvremote_client.utils.bindService
 import com.pointlessapps.tvremote_client.utils.scaleAnimation
 import com.pointlessapps.tvremote_client.viewModels.ViewModelRemote
 
 class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding::inflate) {
 
+	private lateinit var service: ConnectionService
 	private val viewModel by activityViewModels<ViewModelRemote>()
 
 	private val permissionLauncher =
 		registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
 	override fun created() {
+		requireActivity().bindService<ConnectionService.ConnectionBinder>(ConnectionService::class.java) {
+			service = it?.service ?: return@bindService
+			viewModel.setDeviceListener()
+			viewModel.powerOnIfNecessary()
+		}
+		viewModel.setOnGetServiceCallback { service }
+
+		viewModel.toggleShowOnLockScreenIfEnabled(requireActivity())
+
 		lifecycleScope.launchWhenStarted {
 			val settings = viewModel.getSettings()
 
-			if (settings.turnOnTv) viewModel.powerOn()
 			when {
 				settings.showDpad -> setDpad()
 				else -> setTouchHandler()
@@ -57,16 +67,6 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 		requireActivity().onBackPressedDispatcher.addCallback(this) {
 			viewModel.sendClick(KeyEvent.KEYCODE_BACK)
 		}
-	}
-
-	override fun onPause() {
-		viewModel.disconnect()
-		super.onPause()
-	}
-
-	override fun onResume() {
-		super.onResume()
-		viewModel.reconnect()
 	}
 
 	private fun setVoiceInputListener() {
@@ -90,7 +90,6 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 			}
 		}
 
-		root.imageMicrophone.scaleAnimation()
 		viewModel.isVoiceRecording.observe(this) {
 			root.containerVoiceInput.isVisible = it
 			if (it) {

@@ -10,8 +10,6 @@ import kotlinx.coroutines.delay
 
 class TvRemote(private val deviceWrapper: DeviceWrapper) {
 
-	fun disconnect() = deviceWrapper.device?.disconnect()
-
 	fun sendKeyEvent(keyCode: Int, action: Int) {
 		deviceWrapper.device?.sendKeyEvent(keyCode, action)
 	}
@@ -35,7 +33,7 @@ class TvRemote(private val deviceWrapper: DeviceWrapper) {
 		runCatching {
 			"http://${deviceWrapper.device?.deviceInfo?.uri?.host}:8080/power/on"
 				.httpPost().awaitUnit()
-		}.onFailure { sendClick(KeyEvent.KEYCODE_POWER) }
+		}
 	}
 
 	suspend fun powerOff() {
@@ -43,9 +41,6 @@ class TvRemote(private val deviceWrapper: DeviceWrapper) {
 			println("LOG!, turning off. Device info: ${deviceWrapper.device?.deviceInfo}")
 			"http://${deviceWrapper.device?.deviceInfo?.uri?.host}:8080/power/off"
 				.httpPost().awaitUnit()
-		}.onFailure {
-			println("LOG!, error: $it")
-			sendClick(KeyEvent.KEYCODE_POWER)
 		}
 	}
 

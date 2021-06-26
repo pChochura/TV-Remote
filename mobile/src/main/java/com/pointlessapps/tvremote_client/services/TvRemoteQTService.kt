@@ -1,8 +1,12 @@
 package com.pointlessapps.tvremote_client.services
 
+import android.app.ActivityManager
+import android.content.Intent
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import androidx.core.app.ActivityManagerCompat
+import androidx.core.content.ContextCompat
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.requests.CancellableRequest
 import com.github.kittinunf.fuel.httpGet
@@ -10,6 +14,7 @@ import com.github.kittinunf.fuel.httpPost
 import com.pointlessapps.tvremote_client.App
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.utils.NetworkUtils
+import com.pointlessapps.tvremote_client.utils.bindService
 import com.pointlessapps.tvremote_client.utils.string
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
@@ -47,6 +52,10 @@ class TvRemoteQTService : TileService() {
 				requests.add("/power".httpPost().string {
 					forceLoadingState = false
 					this@TvRemoteQTService.setState(it)
+					when (it) {
+						"true", "on" -> openConnection()
+						"false", "off" -> closeConnection()
+					}
 				})
 			}
 		}
@@ -92,14 +101,18 @@ class TvRemoteQTService : TileService() {
 		if (forceLoadingState) return
 
 		when (state) {
-			"true", "on" -> setState(
-				getString(R.string.its_on),
-				Tile.STATE_ACTIVE
-			)
-			"false", "off" -> setState(
-				getString(R.string.its_off),
-				Tile.STATE_INACTIVE
-			)
+			"true", "on" -> {
+				setState(
+					getString(R.string.its_on),
+					Tile.STATE_ACTIVE
+				)
+			}
+			"false", "off" -> {
+				setState(
+					getString(R.string.its_off),
+					Tile.STATE_INACTIVE
+				)
+			}
 			else -> setState(getString(R.string.unknown), Tile.STATE_INACTIVE)
 		}
 	}
@@ -111,6 +124,27 @@ class TvRemoteQTService : TileService() {
 				state?.apply { it.state = this }
 				it.updateTile()
 			}
+		}
+	}
+
+	private fun openConnection() {
+		ContextCompat.startForegroundService(
+			applicationContext,
+			Intent(applicationContext, ConnectionService::class.java)
+		)
+		application.bindService<ConnectionService.ConnectionBinder>(ConnectionService::class.java) {
+			coroutineScope.launch {
+				getPreferenceService().getSettings().first().deviceInfo?.also { deviceInfo ->
+					println("LOG!, openConnection")
+					it?.service?.connectIfNecessary(deviceInfo)
+				}
+			}
+		}
+	}
+
+	private fun closeConnection() {
+		application.bindService<ConnectionService.ConnectionBinder>(ConnectionService::class.java) {
+			it?.service?.quit()
 		}
 	}
 }

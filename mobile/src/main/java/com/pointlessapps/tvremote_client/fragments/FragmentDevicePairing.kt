@@ -7,14 +7,25 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.pointlessapps.tvremote_client.R
 import com.pointlessapps.tvremote_client.databinding.FragmentDevicePairingBinding
+import com.pointlessapps.tvremote_client.services.ConnectionService
+import com.pointlessapps.tvremote_client.utils.Utils
+import com.pointlessapps.tvremote_client.utils.bindService
 import com.pointlessapps.tvremote_client.viewModels.ViewModelDevicePairing
 
 class FragmentDevicePairing :
 	FragmentBase<FragmentDevicePairingBinding>(FragmentDevicePairingBinding::inflate) {
 
+	private lateinit var service: ConnectionService
 	private val viewModel by viewModels<ViewModelDevicePairing>()
 
 	override fun created() {
+		requireActivity().bindService<ConnectionService.ConnectionBinder>(ConnectionService::class.java) {
+			service = it?.service ?: return@bindService
+		}
+		viewModel.setOnGetServiceCallback { service }
+
+		Utils.toggleShowOnLockScreen(requireActivity(), false)
+
 		arrayOf(
 			"0", "1", "2", "3",
 			"4", "5", "6", "7",

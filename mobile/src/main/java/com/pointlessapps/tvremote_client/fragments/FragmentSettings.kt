@@ -62,7 +62,6 @@ class FragmentSettings : FragmentBase<FragmentSettingsBinding>(FragmentSettingsB
 		}
 		root.containerShowOnLockScreen.setOnClickListener {
 			viewModel.setShowOnLockScreen(!root.toggleShowOnLockScreen.isChecked)
-			Utils.toggleShowOnLockScreen(requireActivity(), !root.toggleShowOnLockScreen.isChecked)
 		}
 		root.containerOpenLastConnection.setOnClickListener {
 			viewModel.setOpenLastConnection(!root.toggleOpenLastConnection.isChecked)
@@ -82,7 +81,6 @@ class FragmentSettings : FragmentBase<FragmentSettingsBinding>(FragmentSettingsB
 		}
 		root.toggleShowOnLockScreen.setOnCheckedChangeListener { _, isChecked ->
 			viewModel.setShowOnLockScreen(isChecked)
-			Utils.toggleShowOnLockScreen(requireActivity(), isChecked)
 		}
 		root.toggleOpenLastConnection.setOnCheckedChangeListener { _, isChecked ->
 			viewModel.setOpenLastConnection(isChecked)

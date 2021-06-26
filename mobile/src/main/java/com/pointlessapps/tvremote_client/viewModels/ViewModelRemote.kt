@@ -1,32 +1,31 @@
 package com.pointlessapps.tvremote_client.viewModels
 
+import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.service.quicksettings.TileService
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.ExtractedText
 import androidx.lifecycle.*
-import com.google.android.tv.support.remote.core.Device
 import com.google.android.tv.support.remote.discovery.DeviceInfo
 import com.pointlessapps.tvremote_client.App
-import com.pointlessapps.tvremote_client.models.DeviceWrapper
+import com.pointlessapps.tvremote_client.services.ConnectionService
 import com.pointlessapps.tvremote_client.services.TvRemoteQTService
-import com.pointlessapps.tvremote_client.tv.TvRemote
 import com.pointlessapps.tvremote_client.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ViewModelRemote(application: Application) : AndroidViewModel(application) {
 
+	private lateinit var onGetServiceCallback: () -> ConnectionService
 	private val preferencesService = (application as App).preferencesService
-	private val deviceWrapper = DeviceWrapper((application as App).device)
-	private val remote = TvRemote(deviceWrapper)
+
+	private var isConnecting = false
 
 	val checkedShortcuts = preferencesService.getSettings()
 		.map { settings -> settings.shortcuts.filter { it.checked } }
@@ -42,26 +41,48 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 
 	suspend fun getSettings() = preferencesService.getSettings().first()
 
+	fun setOnGetServiceCallback(onGetServiceCallback: () -> ConnectionService) {
+		this.onGetServiceCallback = onGetServiceCallback
+	}
+
 	init {
-		deviceWrapper.setOnDisconnectedListener {
-			_isLoading.value = true
-			reconnect()
-		}
-		deviceWrapper.setOnConnectedListener {
-			_isLoading.value = false
-			deviceWrapper.device?.beginBatchEdit()
-		}
-		deviceWrapper.setOnStartVoiceListener { _isVoiceRecording.value = true }
-		deviceWrapper.setOnStopVoiceListener { _isVoiceRecording.value = false }
+//		deviceWrapper.setOnStartVoiceListener { _isVoiceRecording.value = true }
+//		deviceWrapper.setOnStopVoiceListener { _isVoiceRecording.value = false }
 
 		viewModelScope.launch {
 			while (true) {
 				delay(500)
-				if (deviceWrapper.device?.isConnected == true) {
+				if (::onGetServiceCallback.isInitialized && onGetServiceCallback().isConnected()) {
 					_isLoading.postValue(false)
 				}
 			}
 		}
+	}
+
+	fun setDeviceListener() {
+		if (!::onGetServiceCallback.isInitialized) {
+			return
+		}
+
+		onGetServiceCallback().setConnectionListener(
+			onConnectFailed = {},
+			onConnecting = {},
+			onConnected = {
+				isConnecting = false
+				_isLoading.postValue(false)
+				it.beginBatchEdit()
+			},
+			onDisconnected = {
+				isConnecting = false
+				_isLoading.postValue(true)
+			},
+			onPairingRequired = {
+				if (!onGetServiceCallback().isConnected()) {
+					it.cancelPairing()
+					isConnecting = false
+				}
+			},
+		)
 	}
 
 	fun setDeviceInfo(deviceInfo: DeviceInfo?) {
@@ -72,97 +93,104 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 		}
 	}
 
-	fun reconnect() {
-		if (deviceWrapper.device?.isConnected != true) {
-			deviceWrapper.device?.disconnect()
-			deviceWrapper.device = Device.from(
-				getApplication(),
-				deviceWrapper.device!!.deviceInfo,
-				deviceWrapper.deviceListener,
-				Handler(Looper.getMainLooper())
-			)
-		}
-	}
-
 	fun disconnect() {
-		deviceWrapper.device?.disconnect()
+		isConnecting = false
+		onGetServiceCallback().disconnect()
 	}
 
 	fun setOnShowImeListener(listener: (EditorInfo?, ExtractedText?) -> Unit) {
-		deviceWrapper.setOnShowImeListener { _, info, text -> listener(info, text) }
+//		deviceWrapper.setOnShowImeListener { _, info, text -> listener(info, text) }
 	}
 
 	fun setOnHideImeListener(listener: () -> Unit) {
-		deviceWrapper.setOnHideImeListener { listener() }
+//		deviceWrapper.setOnHideImeListener { listener() }
 	}
 
 	fun setComposingRegion(from: Int, to: Int) {
-		deviceWrapper.device?.setComposingRegion(from, to)
+//		deviceWrapper.device?.setComposingRegion(from, to)
 	}
 
 	fun setComposingText(text: String, position: Int) {
-		deviceWrapper.device?.setComposingText(text, position)
+//		deviceWrapper.device?.setComposingText(text, position)
 	}
 
 	fun beginBatchEdit() {
-		deviceWrapper.device?.beginBatchEdit()
+//		deviceWrapper.device?.beginBatchEdit()
 	}
 
 	fun endBatchEdit() {
-		deviceWrapper.device?.endBatchEdit()
+//		deviceWrapper.device?.endBatchEdit()
 	}
 
 	fun performEditAction(actionId: Int) {
-		deviceWrapper.device?.performEditorAction(actionId)
+//		deviceWrapper.device?.performEditorAction(actionId)
 	}
 
 	fun stopVoiceRecording() {
-		deviceWrapper.device?.stopVoice()
+//		deviceWrapper.device?.stopVoice()
 		_isVoiceRecording.value = false
 	}
 
-	fun sendKeyEvent(keyCode: Int, action: Int) = remote.sendKeyEvent(keyCode, action)
-	fun sendClick(keyCode: Int) = remote.sendClick(keyCode)
-	fun sendIntent(intent: Intent) = remote.sendIntent(intent)
+	fun sendKeyEvent(keyCode: Int, action: Int) =
+		onGetServiceCallback().remote().sendKeyEvent(keyCode, action)
+
+	fun sendClick(keyCode: Int) = onGetServiceCallback().remote().sendClick(keyCode)
+	fun sendIntent(intent: Intent) = onGetServiceCallback().remote().sendIntent(intent)
 
 	fun sendLongClick(keyCode: Int) {
-		viewModelScope.launch { remote.sendLongClick(keyCode) }
+		viewModelScope.launch { onGetServiceCallback().remote().sendLongClick(keyCode) }
 	}
 
-	fun powerOn() {
-		viewModelScope.launch(Dispatchers.Default) { remote.powerOn() }
-		TileService.requestListeningState(
-			getApplication(),
-			ComponentName(getApplication(), TvRemoteQTService::class.java)
-		)
+	fun powerOnIfNecessary() {
+		viewModelScope.launch {
+			if (getSettings().turnOnTv) {
+				onGetServiceCallback().remote().powerOn()
+			}
+
+			withContext(Dispatchers.Main) {
+				TileService.requestListeningState(
+					getApplication(),
+					ComponentName(getApplication(), TvRemoteQTService::class.java)
+				)
+			}
+		}
 	}
 
 	fun powerOff(onCloseApplicationListener: () -> Unit) {
-		viewModelScope.launch(Dispatchers.Default) {
-			remote.powerOff()
+		viewModelScope.launch {
+			onGetServiceCallback().remote().powerOff()
 			TileService.requestListeningState(
 				getApplication(),
 				ComponentName(getApplication(), TvRemoteQTService::class.java)
 			)
 			if (getSettings().closeApplication) {
-				remote.disconnect()
+				isConnecting = false
+				onGetServiceCallback().disconnect()
 				onCloseApplicationListener()
 			}
 		}
 	}
 
 	fun openApp(packageName: String, activityName: String) {
-		viewModelScope.launch(Dispatchers.Default) { remote.openApp(packageName, activityName) }
+		viewModelScope.launch { onGetServiceCallback().remote().openApp(packageName, activityName) }
 	}
 
 	fun vibrateIfEnabled() {
 		viewModelScope.launch {
 			val settings = getSettings()
-			if (!settings.vibrationEnabled || deviceWrapper.device?.isConnected != true) {
+			if (!settings.vibrationEnabled || !onGetServiceCallback().isConnected()) {
 				return@launch
 			}
 
 			Utils.vibrate(getApplication())
+		}
+	}
+
+	fun toggleShowOnLockScreenIfEnabled(activity: Activity) {
+		viewModelScope.launch {
+			if (getSettings().showOnLockScreen) {
+				Utils.toggleShowOnLockScreen(activity, true)
+			}
 		}
 	}
 }

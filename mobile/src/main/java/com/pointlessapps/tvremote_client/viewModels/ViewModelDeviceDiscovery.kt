@@ -8,12 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.android.tv.support.remote.core.Device
 import com.google.android.tv.support.remote.discovery.DeviceInfo
 import com.google.android.tv.support.remote.discovery.Discoverer
 import com.pointlessapps.tvremote_client.App
 import com.pointlessapps.tvremote_client.R
-import com.pointlessapps.tvremote_client.models.DeviceWrapper
+import com.pointlessapps.tvremote_client.services.ConnectionService
 import com.pointlessapps.tvremote_client.utils.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -29,8 +28,8 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 	val devices: LiveData<List<DeviceInfo>>
 		get() = _devices
 
+	private lateinit var onGetServiceCallback: () -> ConnectionService
 	private val discoverer = Discoverer(application)
-	private val deviceWrapper = DeviceWrapper(null)
 	private val handler = Handler(Looper.getMainLooper())
 	private val discoveryListener = object : DiscoveryListenerImpl() {
 		override fun onStartDiscoveryFailed(errorCode: Int) {
@@ -69,14 +68,26 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 
 	private suspend fun getSettings() = preferencesService.getSettings().first()
 
-	fun setDeviceListener() {
-		deviceWrapper.apply {
-			setOnConnectFailedListener { _state.value = State.FAILED }
-			setOnConnectingListener { _state.value = State.LOADING }
-			setOnConnectedListener { _state.value = State.CONNECTED }
-			setOnDisconnectedListener { startDiscovery() }
-			setOnPairingRequiredListener { _state.value = State.PAIRING }
+	fun setOnGetServiceCallback(onGetServiceCallback: () -> ConnectionService) {
+		this.onGetServiceCallback = onGetServiceCallback
+		setDeviceListener()
+		if (onGetServiceCallback().isConnected()) {
+			_state.postValue(State.CONNECTED)
 		}
+	}
+
+	fun setDeviceListener() {
+		if (!::onGetServiceCallback.isInitialized) {
+			return
+		}
+
+		onGetServiceCallback().setConnectionListener(
+			onConnectFailed = { _state.postValue(State.FAILED) },
+			onConnecting = { _state.postValue(State.LOADING) },
+			onConnected = { _state.postValue(State.CONNECTED) },
+			onDisconnected = { startDiscovery() },
+			onPairingRequired = { _state.postValue(State.PAIRING) },
+		)
 	}
 
 	fun loadDeviceInfo() {
@@ -98,10 +109,12 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 
 	fun startDiscovery() {
 		discoverer.startDiscovery(discoveryListener, handler)
-		_state.value = when {
-			_devices.value.isNullOrEmpty() -> State.SEARCHING
-			else -> State.FOUND
-		}
+		_state.postValue(
+			when {
+				_devices.value.isNullOrEmpty() -> State.SEARCHING
+				else -> State.FOUND
+			}
+		)
 	}
 
 	fun clearSavedDevice() {
@@ -112,20 +125,17 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 		}
 	}
 
-	fun cancelConnecting() {
-		getApplication<App>().device?.disconnect()
+	fun disconnect() {
+		onGetServiceCallback().disconnect()
 	}
 
 	fun loadDevice(deviceInfo: DeviceInfo) {
+		if (!::onGetServiceCallback.isInitialized) {
+			return
+		}
+
 		_state.value = State.LOADING
-		val device = Device.from(
-			getApplication(),
-			deviceInfo,
-			deviceWrapper.deviceListener,
-			handler
-		)
-		getApplication<App>().device = device
-		deviceWrapper.device = device
+		onGetServiceCallback().connectIfNecessary(deviceInfo)
 		viewModelScope.launch {
 			preferencesService.setSettings(getSettings().also {
 				it.deviceInfo = deviceInfo

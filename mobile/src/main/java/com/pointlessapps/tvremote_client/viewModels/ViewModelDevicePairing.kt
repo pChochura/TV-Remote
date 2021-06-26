@@ -7,23 +7,28 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.pointlessapps.tvremote_client.App
 import com.pointlessapps.tvremote_client.models.DeviceWrapper
+import com.pointlessapps.tvremote_client.services.ConnectionService
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ViewModelDevicePairing(application: Application) : AndroidViewModel(application) {
 
+	private lateinit var onGetServiceCallback: () -> ConnectionService
 	private val preferencesService = (application as App).preferencesService
-	private val deviceWrapper = DeviceWrapper((application as App).device)
 	private val _secret = MutableLiveData("")
 	val secret: LiveData<String>
 		get() = _secret
 
+	fun setOnGetServiceCallback(onGetServiceCallback: () -> ConnectionService) {
+		this.onGetServiceCallback = onGetServiceCallback
+	}
+
 	fun disconnect() {
-		deviceWrapper.device!!.disconnect()
+		onGetServiceCallback().disconnect()
 	}
 
 	fun setPairingSecret(secret: String) {
-		deviceWrapper.device!!.setPairingSecret(secret)
+		onGetServiceCallback().setPairingSecret(secret)
 	}
 
 	fun addSymbol(symbol: String) {
