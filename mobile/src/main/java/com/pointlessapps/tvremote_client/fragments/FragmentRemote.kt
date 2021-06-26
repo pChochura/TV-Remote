@@ -41,6 +41,12 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 			service = it?.service ?: return@bindService
 			viewModel.setDeviceListener()
 			viewModel.powerOnIfNecessary()
+
+			setKeyboardInputListener()
+			setVoiceInputListener()
+			setClickListeners()
+			setApplicationsList()
+			viewModel.checkConnectionState()
 		}
 		viewModel.setOnGetServiceCallback { service }
 
@@ -59,14 +65,13 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 			root.progress.isVisible = it
 		}
 
-		setKeyboardInputListener()
-		setVoiceInputListener()
-		setClickListeners()
-		setApplicationsList()
-
 		requireActivity().onBackPressedDispatcher.addCallback(this) {
 			viewModel.sendClick(KeyEvent.KEYCODE_BACK)
 		}
+	}
+
+	override fun refreshed() {
+		viewModel.checkConnectionState()
 	}
 
 	private fun setVoiceInputListener() {
@@ -106,6 +111,7 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 		root.buttonPower.setOnClickListener {
 			viewModel.vibrateIfEnabled()
 			viewModel.powerOff { requireActivity().finish() }
+			requireActivity().startService(Intent(context, ConnectionService::class.java).putExtra(ConnectionService.DISCONNECT, true))
 		}
 		root.buttonPower.setOnLongClickListener {
 			viewModel.vibrateIfEnabled()

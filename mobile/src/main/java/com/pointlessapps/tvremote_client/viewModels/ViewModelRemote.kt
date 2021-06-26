@@ -14,7 +14,6 @@ import com.pointlessapps.tvremote_client.services.ConnectionService
 import com.pointlessapps.tvremote_client.services.TvRemoteQTService
 import com.pointlessapps.tvremote_client.utils.Utils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -24,8 +23,6 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 
 	private lateinit var onGetServiceCallback: () -> ConnectionService
 	private val preferencesService = (application as App).preferencesService
-
-	private var isConnecting = false
 
 	val checkedShortcuts = preferencesService.getSettings()
 		.map { settings -> settings.shortcuts.filter { it.checked } }
@@ -45,44 +42,38 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 		this.onGetServiceCallback = onGetServiceCallback
 	}
 
-	init {
-//		deviceWrapper.setOnStartVoiceListener { _isVoiceRecording.value = true }
-//		deviceWrapper.setOnStopVoiceListener { _isVoiceRecording.value = false }
-
-		viewModelScope.launch {
-			while (true) {
-				delay(500)
-				if (::onGetServiceCallback.isInitialized && onGetServiceCallback().isConnected()) {
-					_isLoading.postValue(false)
-				}
-			}
-		}
-	}
-
 	fun setDeviceListener() {
 		if (!::onGetServiceCallback.isInitialized) {
 			return
 		}
 
+		onGetServiceCallback().setOnVoiceListener(
+			onStartVoice = { _isVoiceRecording.postValue(true) },
+			onStopVoice = { _isVoiceRecording.postValue(false) },
+		)
+
 		onGetServiceCallback().setConnectionListener(
 			onConnectFailed = {},
 			onConnecting = {},
 			onConnected = {
-				isConnecting = false
 				_isLoading.postValue(false)
 				it.beginBatchEdit()
 			},
 			onDisconnected = {
-				isConnecting = false
 				_isLoading.postValue(true)
 			},
 			onPairingRequired = {
 				if (!onGetServiceCallback().isConnected()) {
 					it.cancelPairing()
-					isConnecting = false
 				}
 			},
 		)
+	}
+
+	fun checkConnectionState() {
+		if (::onGetServiceCallback.isInitialized && onGetServiceCallback().isConnected()) {
+			_isLoading.postValue(false)
+		}
 	}
 
 	fun setDeviceInfo(deviceInfo: DeviceInfo?) {
@@ -94,40 +85,43 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 	}
 
 	fun disconnect() {
-		isConnecting = false
 		onGetServiceCallback().disconnect()
 	}
 
 	fun setOnShowImeListener(listener: (EditorInfo?, ExtractedText?) -> Unit) {
-//		deviceWrapper.setOnShowImeListener { _, info, text -> listener(info, text) }
+		onGetServiceCallback().setOnShowImeListener { info, text ->
+			viewModelScope.launch(Dispatchers.Main) { listener(info, text) }
+		}
 	}
 
 	fun setOnHideImeListener(listener: () -> Unit) {
-//		deviceWrapper.setOnHideImeListener { listener() }
+		onGetServiceCallback().setOnHideImeListener {
+			viewModelScope.launch(Dispatchers.Main) { listener() }
+		}
 	}
 
 	fun setComposingRegion(from: Int, to: Int) {
-//		deviceWrapper.device?.setComposingRegion(from, to)
+		onGetServiceCallback().device()?.setComposingRegion(from, to)
 	}
 
 	fun setComposingText(text: String, position: Int) {
-//		deviceWrapper.device?.setComposingText(text, position)
+		onGetServiceCallback().device()?.setComposingText(text, position)
 	}
 
 	fun beginBatchEdit() {
-//		deviceWrapper.device?.beginBatchEdit()
+		onGetServiceCallback().device()?.beginBatchEdit()
 	}
 
 	fun endBatchEdit() {
-//		deviceWrapper.device?.endBatchEdit()
+		onGetServiceCallback().device()?.endBatchEdit()
 	}
 
 	fun performEditAction(actionId: Int) {
-//		deviceWrapper.device?.performEditorAction(actionId)
+		onGetServiceCallback().device()?.performEditorAction(actionId)
 	}
 
 	fun stopVoiceRecording() {
-//		deviceWrapper.device?.stopVoice()
+		onGetServiceCallback().device()?.stopVoice()
 		_isVoiceRecording.value = false
 	}
 
@@ -164,7 +158,6 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 				ComponentName(getApplication(), TvRemoteQTService::class.java)
 			)
 			if (getSettings().closeApplication) {
-				isConnecting = false
 				onGetServiceCallback().disconnect()
 				onCloseApplicationListener()
 			}

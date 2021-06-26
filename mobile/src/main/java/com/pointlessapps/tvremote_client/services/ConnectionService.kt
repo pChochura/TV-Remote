@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Binder
 import android.service.quicksettings.TileService
 import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.ExtractedText
 import com.google.android.tv.support.remote.core.Device
 import com.google.android.tv.support.remote.discovery.DeviceInfo
 import com.pointlessapps.tvremote_client.App
@@ -28,7 +30,7 @@ class ConnectionService : Service() {
 		connectionManager.init(application as App)
 		coroutineScope.launch {
 			while (connectionManager.isConnected()) {
-				delay(1000)
+				delay(5000)
 				connectionManager.remote.sendClick(KeyEvent.KEYCODE_UNKNOWN)
 			}
 		}
@@ -66,8 +68,8 @@ class ConnectionService : Service() {
 	}
 
 	fun isConnected() = connectionManager.isConnected()
-
 	fun remote() = connectionManager.remote
+	fun device() = connectionManager.device
 
 	fun setConnectionListener(
 		onConnectFailed: (Device) -> Unit,
@@ -78,6 +80,18 @@ class ConnectionService : Service() {
 	) = connectionManager.setConnectionListener(
 		onConnectFailed, onConnecting, onConnected, onDisconnected, onPairingRequired
 	)
+
+	fun setOnVoiceListener(onStartVoice: (Device) -> Unit, onStopVoice: (Device) -> Unit) {
+		connectionManager.setOnVoiceListener(onStartVoice, onStopVoice)
+	}
+
+	fun setOnShowImeListener(onShowImeListener: (EditorInfo?, ExtractedText?) -> Unit) {
+		connectionManager.setOnShowImeListener(onShowImeListener)
+	}
+
+	fun setOnHideImeListener(onHideImeListener: () -> Unit) {
+		connectionManager.setOnHideImeListener(onHideImeListener)
+	}
 
 	fun quit() {
 		onDestroy()

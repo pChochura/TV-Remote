@@ -3,6 +3,8 @@ package com.pointlessapps.tvremote_client.managers
 import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.ExtractedText
 import com.google.android.tv.support.remote.core.Device
 import com.google.android.tv.support.remote.discovery.DeviceInfo
 import com.pointlessapps.tvremote_client.App
@@ -13,11 +15,14 @@ import java.util.*
 
 class ConnectionManager {
 
-	private val handlerThread = HandlerThread("${javaClass.name}.${Calendar.getInstance().timeInMillis}")
+	private val handlerThread =
+		HandlerThread("${javaClass.name}.${Calendar.getInstance().timeInMillis}")
 	private lateinit var preferencesService: PreferencesService
 	private val handler by lazy { Handler(handlerThread.looper) }
 	private val deviceWrapper = DeviceWrapper(null)
 	val remote = TvRemote(deviceWrapper)
+	val device: Device?
+		get() = deviceWrapper.device
 
 	var onDisconnectedListener: (() -> Unit)? = null
 
@@ -64,6 +69,19 @@ class ConnectionManager {
 			}
 			setOnPairingRequiredListener { onPairingRequired(it) }
 		}
+	}
+
+	fun setOnVoiceListener(onStartVoice: (Device) -> Unit, onStopVoice: (Device) -> Unit) {
+		deviceWrapper.setOnStartVoiceListener { onStartVoice(it) }
+		deviceWrapper.setOnStopVoiceListener { onStopVoice(it) }
+	}
+
+	fun setOnShowImeListener(onShowImeListener: (EditorInfo?, ExtractedText?) -> Unit) {
+		deviceWrapper.setOnShowImeListener { _, info, text -> onShowImeListener(info, text) }
+	}
+
+	fun setOnHideImeListener(onHideImeListener: () -> Unit) {
+		deviceWrapper.setOnHideImeListener { onHideImeListener() }
 	}
 
 	fun isConnected() = deviceWrapper.device?.isConnected == true
