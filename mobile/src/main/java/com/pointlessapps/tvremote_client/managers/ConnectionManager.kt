@@ -24,7 +24,7 @@ class ConnectionManager {
 	val device: Device?
 		get() = deviceWrapper.device
 
-	var onDisconnectedListener: (() -> Unit)? = null
+	private var onDisconnectedListeners: MutableList<() -> Unit> = mutableListOf()
 
 	fun init(application: App) {
 		preferencesService = application.preferencesService
@@ -44,7 +44,8 @@ class ConnectionManager {
 		)
 	}
 
-	fun disconnect() {
+	fun disconnect(onDisconnected: (() -> Unit)? = null) {
+		onDisconnected?.let { onDisconnectedListeners.add(it) }
 		deviceWrapper.device?.disconnect()
 	}
 
@@ -65,7 +66,11 @@ class ConnectionManager {
 			setOnConnectedListener { onConnected(it) }
 			setOnDisconnectedListener {
 				onDisconnected(it)
-				onDisconnectedListener?.invoke()
+				onDisconnectedListeners.reversed().forEachIndexed { index, function ->
+
+					function()
+					onDisconnectedListeners.removeAt(index)
+				}
 			}
 			setOnPairingRequiredListener { onPairingRequired(it) }
 		}

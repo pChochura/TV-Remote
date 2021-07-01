@@ -32,9 +32,10 @@ class FragmentDeviceDiscovery :
 		Utils.toggleShowOnLockScreen(requireActivity(), false)
 
 		root.buttonRetry.setOnClickListener {
-			viewModel.disconnect()
-			viewModel.clearSavedDevice()
-			viewModel.startDiscovery()
+			viewModel.disconnect {
+				viewModel.clearSavedDevice()
+				viewModel.startDiscovery()
+			}
 		}
 		root.buttonSettings.setOnClickListener {
 			findNavController().navigate(R.id.actionDiscoveryToSettings)

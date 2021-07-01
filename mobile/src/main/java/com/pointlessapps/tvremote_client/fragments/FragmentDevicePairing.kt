@@ -58,9 +58,10 @@ class FragmentDevicePairing :
 
 		onDispatchKeyEvent = lambda@{
 			if (it.keyCode == KeyEvent.KEYCODE_BACK) {
-				viewModel.disconnect()
-				viewModel.forgetDevice()
-				findNavController().navigateUp()
+				viewModel.disconnect {
+					viewModel.forgetDevice()
+					findNavController().navigateUp()
+				}
 
 				return@lambda true
 			}

@@ -125,8 +125,8 @@ class ViewModelDeviceDiscovery(application: Application) : AndroidViewModel(appl
 		}
 	}
 
-	fun disconnect() {
-		onGetServiceCallback().disconnect()
+	fun disconnect(onDisconnected: () -> Unit) {
+		onGetServiceCallback().disconnect(onDisconnected)
 	}
 
 	fun loadDevice(deviceInfo: DeviceInfo) {

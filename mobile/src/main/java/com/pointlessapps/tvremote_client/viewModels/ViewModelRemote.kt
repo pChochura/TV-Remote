@@ -14,6 +14,7 @@ import com.pointlessapps.tvremote_client.services.ConnectionService
 import com.pointlessapps.tvremote_client.services.TvRemoteQTService
 import com.pointlessapps.tvremote_client.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -35,6 +36,15 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 	private val _isVoiceRecording = MutableLiveData(false)
 	val isVoiceRecording: LiveData<Boolean>
 		get() = _isVoiceRecording
+
+	init {
+		viewModelScope.launch {
+			delay(5000)
+			if (::onGetServiceCallback.isInitialized) {
+				_isLoading.postValue(!onGetServiceCallback().isConnected())
+			}
+		}
+	}
 
 	suspend fun getSettings() = preferencesService.getSettings().first()
 
@@ -84,8 +94,8 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 		}
 	}
 
-	fun disconnect() {
-		onGetServiceCallback().disconnect()
+	fun disconnect(onDisconnected: () -> Unit) {
+		onGetServiceCallback().disconnect(onDisconnected)
 	}
 
 	fun setOnShowImeListener(listener: (EditorInfo?, ExtractedText?) -> Unit) {
@@ -136,7 +146,7 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 	}
 
 	fun powerOnIfNecessary() {
-		viewModelScope.launch {
+		viewModelScope.launch(Dispatchers.IO) {
 			if (getSettings().turnOnTv) {
 				onGetServiceCallback().remote().powerOn()
 			}
@@ -151,7 +161,7 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 	}
 
 	fun powerOff(onCloseApplicationListener: () -> Unit) {
-		viewModelScope.launch {
+		viewModelScope.launch(Dispatchers.IO) {
 			onGetServiceCallback().remote().powerOff()
 			TileService.requestListeningState(
 				getApplication(),
@@ -165,7 +175,9 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 	}
 
 	fun openApp(packageName: String, activityName: String) {
-		viewModelScope.launch { onGetServiceCallback().remote().openApp(packageName, activityName) }
+		viewModelScope.launch(Dispatchers.IO) {
+			onGetServiceCallback().remote().openApp(packageName, activityName)
+		}
 	}
 
 	fun vibrateIfEnabled() {

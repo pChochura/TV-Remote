@@ -23,8 +23,8 @@ class ViewModelDevicePairing(application: Application) : AndroidViewModel(applic
 		this.onGetServiceCallback = onGetServiceCallback
 	}
 
-	fun disconnect() {
-		onGetServiceCallback().disconnect()
+	fun disconnect(onDisconnected: () -> Unit) {
+		onGetServiceCallback().disconnect(onDisconnected)
 	}
 
 	fun setPairingSecret(secret: String) {

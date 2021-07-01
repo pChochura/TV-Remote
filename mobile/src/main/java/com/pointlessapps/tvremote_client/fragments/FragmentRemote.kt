@@ -39,6 +39,7 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 	override fun created() {
 		requireActivity().bindService<ConnectionService.ConnectionBinder>(ConnectionService::class.java) {
 			service = it?.service ?: return@bindService
+			viewModel.setOnGetServiceCallback { service }
 			viewModel.setDeviceListener()
 			viewModel.powerOnIfNecessary()
 
@@ -48,7 +49,6 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 			setApplicationsList()
 			viewModel.checkConnectionState()
 		}
-		viewModel.setOnGetServiceCallback { service }
 
 		viewModel.toggleShowOnLockScreenIfEnabled(requireActivity())
 
@@ -111,7 +111,12 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 		root.buttonPower.setOnClickListener {
 			viewModel.vibrateIfEnabled()
 			viewModel.powerOff { requireActivity().finish() }
-			requireActivity().startService(Intent(context, ConnectionService::class.java).putExtra(ConnectionService.DISCONNECT, true))
+			requireActivity().startService(
+				Intent(context, ConnectionService::class.java).putExtra(
+					ConnectionService.DISCONNECT,
+					true
+				)
+			)
 		}
 		root.buttonPower.setOnLongClickListener {
 			viewModel.vibrateIfEnabled()
@@ -137,9 +142,10 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 		}
 		root.buttonClose.setOnClickListener {
 			viewModel.vibrateIfEnabled()
-			viewModel.disconnect()
 			viewModel.setDeviceInfo(null)
-			findNavController().navigate(R.id.actionRemoteToDiscovery)
+			viewModel.disconnect {
+				findNavController().navigate(R.id.actionRemoteToDiscovery)
+			}
 		}
 
 		onDispatchKeyEvent = { event ->

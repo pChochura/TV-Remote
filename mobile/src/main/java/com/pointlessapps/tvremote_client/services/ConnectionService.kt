@@ -59,8 +59,12 @@ class ConnectionService : Service() {
 		)
 	}
 
-	fun disconnect() {
-		connectionManager.disconnect()
+	fun disconnect(onDisconnected: (() -> Unit)? = null) {
+		connectionManager.disconnect {
+			coroutineScope.launch(Dispatchers.Main) {
+				onDisconnected?.invoke()
+			}
+		}
 	}
 
 	fun setPairingSecret(secret: String) {
@@ -101,19 +105,16 @@ class ConnectionService : Service() {
 	override fun onBind(intent: Intent?) = binder
 
 	override fun onDestroy() {
-		coroutineScope.launch {
+		coroutineScope.launch(Dispatchers.IO) {
 			connectionManager.remote.powerOff()
 			withContext(Dispatchers.Main) {
-				disconnect()
+				disconnect { connectionManager.quit() }
 				stopForeground(true)
 				stopSelf()
 				TileService.requestListeningState(
 					application,
 					ComponentName(application, TvRemoteQTService::class.java)
 				)
-				connectionManager.onDisconnectedListener = {
-					connectionManager.quit()
-				}
 			}
 		}
 	}
