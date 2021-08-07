@@ -66,10 +66,9 @@ class ConnectionManager {
 			setOnConnectedListener { onConnected(it) }
 			setOnDisconnectedListener {
 				onDisconnected(it)
-				onDisconnectedListeners.reversed().forEachIndexed { index, function ->
-
+				onDisconnectedListeners.reversed().forEach { function ->
 					function()
-					onDisconnectedListeners.removeAt(index)
+					onDisconnectedListeners.remove(function)
 				}
 			}
 			setOnPairingRequiredListener { onPairingRequired(it) }

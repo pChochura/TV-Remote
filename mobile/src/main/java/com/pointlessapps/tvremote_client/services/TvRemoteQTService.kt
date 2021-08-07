@@ -1,11 +1,9 @@
 package com.pointlessapps.tvremote_client.services
 
-import android.app.ActivityManager
 import android.content.Intent
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import androidx.core.app.ActivityManagerCompat
 import androidx.core.content.ContextCompat
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.requests.CancellableRequest
@@ -21,7 +19,7 @@ import kotlinx.coroutines.flow.first
 
 class TvRemoteQTService : TileService() {
 
-	private val coroutineScope = CoroutineScope(Dispatchers.Default)
+	private val coroutineScope = CoroutineScope(Dispatchers.Main)
 	private val requests = mutableListOf<CancellableRequest>()
 	private var forceLoadingState = false
 
@@ -135,7 +133,6 @@ class TvRemoteQTService : TileService() {
 		application.bindService<ConnectionService.ConnectionBinder>(ConnectionService::class.java) {
 			coroutineScope.launch {
 				getPreferenceService().getSettings().first().deviceInfo?.also { deviceInfo ->
-					println("LOG!, openConnection")
 					it?.service?.connectIfNecessary(deviceInfo)
 				}
 			}

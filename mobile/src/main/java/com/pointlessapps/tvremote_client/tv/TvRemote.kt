@@ -38,7 +38,6 @@ class TvRemote(private val deviceWrapper: DeviceWrapper) {
 
 	suspend fun powerOff() {
 		runCatching {
-			println("LOG!, turning off. Device info: ${deviceWrapper.device?.deviceInfo}")
 			"http://${deviceWrapper.device?.deviceInfo?.uri?.host}:8080/power/off"
 				.httpPost().awaitUnit()
 		}
@@ -46,7 +45,6 @@ class TvRemote(private val deviceWrapper: DeviceWrapper) {
 
 	suspend fun openApp(packageName: String, activityName: String) {
 		runCatching {
-			println("LOG!, package: $packageName")
 			"http://${deviceWrapper.device?.deviceInfo?.uri?.host}:8080/open/${packageName}"
 				.httpPost().awaitUnit()
 		}.onFailure {

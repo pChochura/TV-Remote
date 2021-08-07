@@ -15,6 +15,7 @@ import com.pointlessapps.tvremote_client.MainActivity
 import com.pointlessapps.tvremote_client.managers.ConnectionManager
 import com.pointlessapps.tvremote_client.managers.NotificationManager
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 
 class ConnectionService : Service() {
 
@@ -22,6 +23,7 @@ class ConnectionService : Service() {
 		const val DISCONNECT = "disconnect"
 	}
 
+	private val preferencesService = (application as? App)?.preferencesService
 	private val coroutineScope = CoroutineScope(Job() + Dispatchers.Default)
 	private val binder = ConnectionBinder()
 	private val connectionManager = ConnectionManager()
@@ -29,9 +31,15 @@ class ConnectionService : Service() {
 	override fun onCreate() {
 		connectionManager.init(application as App)
 		coroutineScope.launch {
-			while (connectionManager.isConnected()) {
+			while (true) {
+				if (connectionManager.isConnected()) {
+					connectionManager.remote.sendClick(KeyEvent.KEYCODE_UNKNOWN)
+				} else {
+					preferencesService?.getSettings()?.first()?.deviceInfo?.also {
+						connectionManager.connect(applicationContext, it)
+					}
+				}
 				delay(5000)
-				connectionManager.remote.sendClick(KeyEvent.KEYCODE_UNKNOWN)
 			}
 		}
 	}

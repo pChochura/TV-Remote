@@ -15,10 +15,7 @@ import org.json.JSONObject
 
 object TvRemote {
 
-    private val focusRequest =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) AudioFocusRequest.Builder(
-            AudioManager.AUDIOFOCUS_GAIN
-        ).build() else null
+    private val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).build()
 
     fun powerOn(context: Context) {
         togglePower(context, false)
@@ -40,10 +37,8 @@ object TvRemote {
     }
 
     private fun releaseAudioFocus(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            audioManager.abandonAudioFocusRequest(focusRequest!!)
-        }
+        val audioManager = context.getSystemService(AudioManager::class.java)
+        audioManager.abandonAudioFocusRequest(focusRequest!!)
     }
 
     fun powerOff(context: Context) {
@@ -60,16 +55,14 @@ object TvRemote {
     }
 
     private fun gainAudioFocus(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            if (audioManager.isMusicActive) {
-                val mediaIntent = Intent("com.android.music.musicservicecommand")
-                mediaIntent.putExtra("command", "pause")
-                context.sendBroadcast(mediaIntent)
-            }
-
-            audioManager.requestAudioFocus(focusRequest!!)
+        val audioManager = context.getSystemService(AudioManager::class.java)
+        if (audioManager.isMusicActive) {
+            val mediaIntent = Intent("com.android.music.musicservicecommand")
+            mediaIntent.putExtra("command", "pause")
+            context.sendBroadcast(mediaIntent)
         }
+
+        audioManager.requestAudioFocus(focusRequest!!)
     }
 
     fun togglePower(context: Context): Boolean? {

@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 
 class ViewModelRemote(application: Application) : AndroidViewModel(application) {
 
-	private lateinit var onGetServiceCallback: () -> ConnectionService
+	private var onGetServiceCallback: (() -> ConnectionService)? = null
 	private val preferencesService = (application as App).preferencesService
 
 	val checkedShortcuts = preferencesService.getSettings()
@@ -40,29 +40,26 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 	init {
 		viewModelScope.launch {
 			delay(5000)
-			if (::onGetServiceCallback.isInitialized) {
-				_isLoading.postValue(!onGetServiceCallback().isConnected())
-			}
+			_isLoading.postValue(onGetServiceCallback?.invoke()?.isConnected() != true)
 		}
 	}
 
 	suspend fun getSettings() = preferencesService.getSettings().first()
+
+	private fun getDevice() = onGetServiceCallback?.invoke()?.device()
+	private fun getRemote() = onGetServiceCallback?.invoke()?.remote()
 
 	fun setOnGetServiceCallback(onGetServiceCallback: () -> ConnectionService) {
 		this.onGetServiceCallback = onGetServiceCallback
 	}
 
 	fun setDeviceListener() {
-		if (!::onGetServiceCallback.isInitialized) {
-			return
-		}
-
-		onGetServiceCallback().setOnVoiceListener(
+		onGetServiceCallback?.invoke()?.setOnVoiceListener(
 			onStartVoice = { _isVoiceRecording.postValue(true) },
 			onStopVoice = { _isVoiceRecording.postValue(false) },
 		)
 
-		onGetServiceCallback().setConnectionListener(
+		onGetServiceCallback?.invoke()?.setConnectionListener(
 			onConnectFailed = {},
 			onConnecting = {},
 			onConnected = {
@@ -73,7 +70,7 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 				_isLoading.postValue(true)
 			},
 			onPairingRequired = {
-				if (!onGetServiceCallback().isConnected()) {
+				if (onGetServiceCallback?.invoke()?.isConnected() != true) {
 					it.cancelPairing()
 				}
 			},
@@ -81,7 +78,7 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 	}
 
 	fun checkConnectionState() {
-		if (::onGetServiceCallback.isInitialized && onGetServiceCallback().isConnected()) {
+		if (onGetServiceCallback?.invoke()?.isConnected() == true) {
 			_isLoading.postValue(false)
 		}
 	}
@@ -95,60 +92,58 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 	}
 
 	fun disconnect(onDisconnected: () -> Unit) {
-		onGetServiceCallback().disconnect(onDisconnected)
+		onGetServiceCallback?.invoke()?.disconnect(onDisconnected)
 	}
 
 	fun setOnShowImeListener(listener: (EditorInfo?, ExtractedText?) -> Unit) {
-		onGetServiceCallback().setOnShowImeListener { info, text ->
+		onGetServiceCallback?.invoke()?.setOnShowImeListener { info, text ->
 			viewModelScope.launch(Dispatchers.Main) { listener(info, text) }
 		}
 	}
 
 	fun setOnHideImeListener(listener: () -> Unit) {
-		onGetServiceCallback().setOnHideImeListener {
+		onGetServiceCallback?.invoke()?.setOnHideImeListener {
 			viewModelScope.launch(Dispatchers.Main) { listener() }
 		}
 	}
 
 	fun setComposingRegion(from: Int, to: Int) {
-		onGetServiceCallback().device()?.setComposingRegion(from, to)
+		getDevice()?.setComposingRegion(from, to)
 	}
 
 	fun setComposingText(text: String, position: Int) {
-		onGetServiceCallback().device()?.setComposingText(text, position)
+		getDevice()?.setComposingText(text, position)
 	}
 
 	fun beginBatchEdit() {
-		onGetServiceCallback().device()?.beginBatchEdit()
+		getDevice()?.beginBatchEdit()
 	}
 
 	fun endBatchEdit() {
-		onGetServiceCallback().device()?.endBatchEdit()
+		getDevice()?.endBatchEdit()
 	}
 
 	fun performEditAction(actionId: Int) {
-		onGetServiceCallback().device()?.performEditorAction(actionId)
+		getDevice()?.performEditorAction(actionId)
 	}
 
 	fun stopVoiceRecording() {
-		onGetServiceCallback().device()?.stopVoice()
+		getDevice()?.stopVoice()
 		_isVoiceRecording.value = false
 	}
 
-	fun sendKeyEvent(keyCode: Int, action: Int) =
-		onGetServiceCallback().remote().sendKeyEvent(keyCode, action)
-
-	fun sendClick(keyCode: Int) = onGetServiceCallback().remote().sendClick(keyCode)
-	fun sendIntent(intent: Intent) = onGetServiceCallback().remote().sendIntent(intent)
+	fun sendKeyEvent(keyCode: Int, action: Int) = getRemote()?.sendKeyEvent(keyCode, action)
+	fun sendClick(keyCode: Int) = getRemote()?.sendClick(keyCode)
+	fun sendIntent(intent: Intent) = getRemote()?.sendIntent(intent)
 
 	fun sendLongClick(keyCode: Int) {
-		viewModelScope.launch { onGetServiceCallback().remote().sendLongClick(keyCode) }
+		viewModelScope.launch { getRemote()?.sendLongClick(keyCode) }
 	}
 
 	fun powerOnIfNecessary() {
 		viewModelScope.launch(Dispatchers.IO) {
 			if (getSettings().turnOnTv) {
-				onGetServiceCallback().remote().powerOn()
+				getRemote()?.powerOn()
 			}
 
 			withContext(Dispatchers.Main) {
@@ -162,13 +157,13 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 
 	fun powerOff(onCloseApplicationListener: () -> Unit) {
 		viewModelScope.launch(Dispatchers.IO) {
-			onGetServiceCallback().remote().powerOff()
+			getRemote()?.powerOff()
 			TileService.requestListeningState(
 				getApplication(),
 				ComponentName(getApplication(), TvRemoteQTService::class.java)
 			)
 			if (getSettings().closeApplication) {
-				onGetServiceCallback().disconnect()
+				onGetServiceCallback?.invoke()?.disconnect()
 				onCloseApplicationListener()
 			}
 		}
@@ -176,14 +171,16 @@ class ViewModelRemote(application: Application) : AndroidViewModel(application) 
 
 	fun openApp(packageName: String, activityName: String) {
 		viewModelScope.launch(Dispatchers.IO) {
-			onGetServiceCallback().remote().openApp(packageName, activityName)
+			getRemote()?.openApp(packageName, activityName)
 		}
 	}
 
 	fun vibrateIfEnabled() {
 		viewModelScope.launch {
 			val settings = getSettings()
-			if (!settings.vibrationEnabled || !onGetServiceCallback().isConnected()) {
+			if (!settings.vibrationEnabled || onGetServiceCallback?.invoke()
+					?.isConnected() != true
+			) {
 				return@launch
 			}
 

@@ -10,12 +10,11 @@ import com.pointlessapps.tvremote_server.services.ServerService
 
 class MainActivity : Activity() {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         startForegroundService(Intent(this, ServerService::class.java))
-        Toast.makeText(this, "Service is started", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Service has started", Toast.LENGTH_SHORT).show()
         finish()
     }
 }

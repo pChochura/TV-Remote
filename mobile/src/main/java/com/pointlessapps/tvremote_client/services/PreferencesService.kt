@@ -26,7 +26,7 @@ class PreferencesService(coroutineScope: CoroutineScope, private val context: Co
 		name = "${
 			context.getString(
 				R.string.app_name
-			).toLowerCase(Locale.getDefault())
+			).lowercase(Locale.getDefault())
 		}_prefs",
 		scope = coroutineScope
 	)

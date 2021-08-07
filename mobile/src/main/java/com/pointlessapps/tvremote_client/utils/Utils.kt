@@ -26,7 +26,7 @@ object Utils {
 	fun showKeyboard(context: Context, view: View) {
 		view.post { view.requestFocus() }
 		context.getSystemService(InputMethodManager::class.java)
-			.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+			.showSoftInput(view, InputMethodManager.SHOW_FORCED)
 	}
 
 	fun hideKeyboard(context: Context, view: View) {

@@ -24,7 +24,8 @@
 			android:name=".SplashActivity"
 			android:launchMode="singleInstance"
 			android:screenOrientation="portrait"
-			android:theme="@style/SplashTheme">
+			android:theme="@style/SplashTheme"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -44,7 +45,8 @@
 			android:icon="@drawable/ic_tv"
 			android:label="@string/toggle_tv_power"
 			android:launchMode="singleInstance"
-			android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+			android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="android.service.quicksettings.action.QS_TILE" />
 			</intent-filter>

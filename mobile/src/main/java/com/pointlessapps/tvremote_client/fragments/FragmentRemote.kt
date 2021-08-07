@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,7 +14,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -35,6 +36,17 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 
 	private val permissionLauncher =
 		registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
+	private val textWatcher: TextWatcher = object : TextWatcher {
+		override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+		override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+		override fun afterTextChanged(s: Editable?) {
+			viewModel.setComposingText(
+				s?.toString() ?: return,
+				root.editInput.selectionStart
+			)
+		}
+	}
 
 	override fun created() {
 		requireActivity().bindService<ConnectionService.ConnectionBinder>(ConnectionService::class.java) {
@@ -199,14 +211,6 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 	}
 
 	private fun setKeyboardInputListener() {
-		val textWatcher = root.editInput.addTextChangedListener {
-			viewModel.setComposingText(
-				it?.toString() ?: return@addTextChangedListener,
-				root.editInput.selectionStart
-			)
-		}
-		root.editInput.removeTextChangedListener(textWatcher)
-
 		viewModel.setOnShowImeListener { editorInfo, text ->
 			editorInfo?.also { info ->
 				info.hintText.takeIf { it.isNotEmpty() }?.let { root.editInput.hint = it }
