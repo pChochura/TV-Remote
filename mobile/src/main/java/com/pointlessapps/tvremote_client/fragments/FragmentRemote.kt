@@ -213,7 +213,7 @@ class FragmentRemote : FragmentBase<FragmentRemoteBinding>(FragmentRemoteBinding
 	private fun setKeyboardInputListener() {
 		viewModel.setOnShowImeListener { editorInfo, text ->
 			editorInfo?.also { info ->
-				info.hintText.takeIf { it.isNotEmpty() }?.let { root.editInput.hint = it }
+				info.hintText?.takeIf { it.isNotEmpty() }?.let { root.editInput.hint = it }
 				root.editInput.imeOptions = info.imeOptions
 			}
 			if (root.containerKeyboardInput.isGone) {

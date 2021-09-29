@@ -21,6 +21,7 @@ class ConnectionService : Service() {
 
 	companion object {
 		const val DISCONNECT = "disconnect"
+		const val PAUSE = "pause"
 	}
 
 	private val preferencesService = (application as? App)?.preferencesService
@@ -46,13 +47,12 @@ class ConnectionService : Service() {
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		startForeground(1234, NotificationManager.createNotification(applicationContext))
-		if (intent?.getBooleanExtra(DISCONNECT, false) == true) {
-			quit()
-
-			return START_NOT_STICKY
+		return when {
+			intent?.getBooleanExtra(DISCONNECT, false) == true -> START_NOT_STICKY.also { quit() }
+			intent?.getBooleanExtra(PAUSE, false) == true -> START_NOT_STICKY.also { pause() }
+			else -> START_STICKY
 		}
 
-		return START_STICKY
 	}
 
 	fun connectIfNecessary(deviceInfo: DeviceInfo) {
@@ -106,15 +106,23 @@ class ConnectionService : Service() {
 	}
 
 	fun quit() {
-		onDestroy()
+		closeConnection(true)
+		sendBroadcast(Intent(MainActivity.CLOSE_APP))
+	}
+
+	private fun pause() {
+		closeConnection()
 		sendBroadcast(Intent(MainActivity.CLOSE_APP))
 	}
 
 	override fun onBind(intent: Intent?) = binder
+	override fun onDestroy() = closeConnection()
 
-	override fun onDestroy() {
+	private fun closeConnection(turnOffTv: Boolean = false) {
 		coroutineScope.launch(Dispatchers.IO) {
-			connectionManager.remote.powerOff()
+			if (turnOffTv) {
+				connectionManager.remote.powerOff()
+			}
 			withContext(Dispatchers.Main) {
 				disconnect { connectionManager.quit() }
 				stopForeground(true)

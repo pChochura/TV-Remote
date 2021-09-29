@@ -16,6 +16,7 @@ object NotificationManager {
 
 	private const val CONTENT_INTENT_REQUEST_CODE = 0
 	private const val DISCONNECT_INTENT_REQUEST_CODE = 1
+	private const val PAUSE_INTENT_REQUEST_CODE = 2
 
 	private fun createChannel(context: Context) {
 		NotificationManagerCompat.from(context).createNotificationChannel(
@@ -34,14 +35,21 @@ object NotificationManager {
 			context,
 			CONTENT_INTENT_REQUEST_CODE,
 			Intent(context, SplashActivity::class.java).putExtra(MainActivity.DESTINATION, R.id.remote),
-			PendingIntent.FLAG_UPDATE_CURRENT
+			PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 		)
 
 		val disconnectIntent = PendingIntent.getService(
 			context,
 			DISCONNECT_INTENT_REQUEST_CODE,
 			Intent(context, ConnectionService::class.java).putExtra(ConnectionService.DISCONNECT, true),
-			PendingIntent.FLAG_UPDATE_CURRENT
+			PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+		)
+
+		val pauseIntent = PendingIntent.getService(
+			context,
+			PAUSE_INTENT_REQUEST_CODE,
+			Intent(context, ConnectionService::class.java).putExtra(ConnectionService.PAUSE, true),
+			PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 		)
 
 		return Notification.Builder(context, context.getString(R.string.channel_id))
@@ -54,6 +62,13 @@ object NotificationManager {
 					null,
 					context.getString(R.string.disconnect),
 					disconnectIntent
+				).build()
+			)
+			.addAction(
+				Notification.Action.Builder(
+					null,
+					context.getString(R.string.pause),
+					pauseIntent
 				).build()
 			)
 			.setAutoCancel(false)

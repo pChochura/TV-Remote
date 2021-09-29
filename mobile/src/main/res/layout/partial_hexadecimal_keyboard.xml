@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
+	android:layout_height="700dp"
 	android:orientation="vertical">
 
 	<com.google.android.material.button.MaterialButton
@@ -27,6 +27,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -52,6 +53,7 @@
 		app:layout_constraintStart_toEndOf="@id/button1"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -77,6 +79,7 @@
 		app:layout_constraintStart_toEndOf="@id/button2"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -102,6 +105,7 @@
 		app:layout_constraintStart_toEndOf="@id/button3"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -127,6 +131,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/button1"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -153,6 +158,7 @@
 		app:layout_constraintStart_toEndOf="@id/button4"
 		app:layout_constraintTop_toBottomOf="@id/button2"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -179,6 +185,7 @@
 		app:layout_constraintStart_toEndOf="@id/button5"
 		app:layout_constraintTop_toBottomOf="@id/button3"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -205,6 +212,7 @@
 		app:layout_constraintStart_toEndOf="@id/button6"
 		app:layout_constraintTop_toBottomOf="@id/buttonA"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -230,6 +238,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/button4"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -256,6 +265,7 @@
 		app:layout_constraintStart_toEndOf="@id/button7"
 		app:layout_constraintTop_toBottomOf="@id/button5"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -282,6 +292,7 @@
 		app:layout_constraintStart_toEndOf="@id/button8"
 		app:layout_constraintTop_toBottomOf="@id/button6"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -308,6 +319,7 @@
 		app:layout_constraintStart_toEndOf="@id/button9"
 		app:layout_constraintTop_toBottomOf="@id/buttonB"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -333,6 +345,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/button7"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -359,6 +372,7 @@
 		app:layout_constraintStart_toEndOf="@id/button0"
 		app:layout_constraintTop_toBottomOf="@id/button8"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -385,6 +399,7 @@
 		app:layout_constraintStart_toEndOf="@id/buttonF"
 		app:layout_constraintTop_toBottomOf="@id/button9"
 		app:layout_constraintVertical_chainStyle="packed"
+		app:layout_constraintWidth_min="30dp"
 		app:strokeColor="@color/primary"
 		app:strokeWidth="3dp" />
 
@@ -403,6 +418,7 @@
 		android:padding="5dp"
 		android:text="D"
 		android:textColor="@color/textPrimary"
+		android:textSize="24sp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintDimensionRatio="1:1"
 		app:layout_constraintEnd_toEndOf="parent"
